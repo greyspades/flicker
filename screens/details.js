@@ -1,5 +1,5 @@
 import React, { PureComponent, useState,useEffect,useRef } from 'react'
-import { Text,RefreshControl, View,Button,StyleSheet,Image,ScrollView,ImageBackground,FlatList,TouchableOpacity } from 'react-native'
+import { Text,RefreshControl, View,Button,StyleSheet,Image,ScrollView,ImageBackground,FlatList,TouchableOpacity,InteractionManager } from 'react-native'
 import Axios from 'axios'
 //import Modal,{ModalContent,Backdrop} from 'react-native-modals'
 import Modal from 'react-native-modal'
@@ -11,9 +11,10 @@ import {MdiAccount} from '@mdi/js'
 //import {FontAwesomeIicon} from '@fortawesome/react-fontawesome'
 //import Icon from'@mdi/react'
 import {mdiStarOutline} from '@mdi/js'
-import { NavigationActions,useScrollToTop } from 'react-navigation'
+import { NavigationActions,useScrollToTop, StackActions } from 'react-navigation'
 //import { FlatList } from 'react-native-gesture-handler'
 import Card from '../shared/card'
+import { interpolate } from 'react-native-reanimated'
 //import {useScrollToTop} from '@react-navigation/native';
 
 const Details=({navigation})=>{
@@ -51,25 +52,37 @@ const Details=({navigation})=>{
 
       const link2='https://image.tmdb.org/t/p/original/2TeJfUZMGolfDdW6DKhfIWqvq8y.jpg'
 
+      const resetAction=StackActions.reset({
+        index:0,
+        actions:[NavigationActions.navigate({routeName:'Details'})]
+      })
+
       useEffect(()=>{
-        Axios.get(`https://api.themoviedb.org/3/movie/${id}/similar?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=1`)
-        .then((res)=>{
-          setsimilar(res.data.results)
+        InteractionManager.runAfterInteractions(()=>{
+          Axios.get(`https://api.themoviedb.org/3/movie/${id}/similar?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=1`)
+          .then((res)=>{
+            setsimilar(res.data.results)
+            
+          })
+          //navigation.dispatch(resetAction)
         })
+       
       })
       const scrollTop=()=>{
         scrollRef.ScrollTo({y:0,animated:true})
       }
       
+      
+      
     return (
         
-           <ImageBackground source={{uri:link}} style={styles.background}>
+           <ImageBackground source={{uri:background}} style={styles.background}>
           <View View style={{backgroundColor:'rgba(0,0,0,0.7)'}}>
           <ScrollView style={styles.scroll} ref={scrollRef} >
           
             <ScrollView ref={scrollRef}
             >
-            <Image source={{uri:background}} style={styles.image} resizeMode={"stretch"} />
+            <Image source={{uri:link}} style={styles.image} resizeMode={"stretch"} />
             
             <Text style={styles.title}>{navigation.getParam('title')}</Text>
             

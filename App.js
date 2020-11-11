@@ -6,6 +6,12 @@ import Home from './screens/home'
 import * as font from 'expo-font'
 import Drawer from './routes/drawer'
 import  Details from './screens/details'
+import {createStore} from 'redux'
+import {Provider} from 'react-redux'
+import movieReducer from './redux/reducers/moviereducer'
+import Homestack from './routes/stack'
+import SeriesStack from './routes/trendstack'
+import {enableScreens} from 'react-native-screens'
 
 
 export default function App() {
@@ -21,26 +27,15 @@ export default function App() {
     //getapi()
   })
 
-  const getapi=()=>{
-    fetch('http://localhost:5000/items')
-    .then((result)=>result.json())
-    .then(json=>{
-      setmain({
-        name2:json
-      })
-    })
-    .catch(err=>console.log(err))
-  }
+  const store=createStore(movieReducer)
+  enableScreens()
  
   return (
     <View style={styles.container}>
+      <Provider  store={store}>
+        <Drawer />
+      </Provider>
 
-  
-   <Drawer />
-    
-  
-     
-   
     </View> 
   );
 }

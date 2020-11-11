@@ -1,24 +1,28 @@
 import React, { useState,useEffect, useCallback,useMemo,  } from 'react'
-import { Text, View,StyleSheet,Button,TouchableOpacity,ActivityIndicator} from 'react-native'
+import { Text, View,StyleSheet,Button,TouchableOpacity,ActivityIndicator,InteractionManager} from 'react-native'
 import Axios from 'axios'
 import Card from '../shared/card'
 import {SectionGrid,FlatGrid} from 'react-native-super-grid'
 import FastImage from 'react-native-fast-image'
 import Renderitem from '../components/renderitem'
+import {connect} from 'react-redux'
 
 
 
-const Popular=({navigation})=>{
+const Popular=(props)=>{
     const [popular,setpopular]=useState([])
-       
+    const [main,setmain]=useState(movies)       
  
-    const [page,setpage]=useState(1)
+    //const [page,setpage]=useState(1)
     const [loading,setloading]=useState([])
     const [prev,setprev]=useState([])
     const [isLoading,setIsLoading]=useState(false)
     
     useEffect(()=>{
-        getapi()
+        InteractionManager.runAfterInteractions(()=>{
+            getapi()
+        })
+        
         //getrest()
     })
 
@@ -38,16 +42,16 @@ const Popular=({navigation})=>{
     var next=[]
 
     const getapi=()=>{
-     Axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${page}`)
+     Axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${props.page}`)
      .then((res)=>{
-        setpopular([...loading,...res.data.results])
+        props.setMovies(res.data.results)
      })
     }
     const getrest=()=>{
-        setpage(page+1)
-        Axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${page}`)
+     props.nextPage()
+     Axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${props.page}`)
      .then((res)=>{
-        setloading([...loading,...res.data.results])
+        props.updateMovies(res.data.results)
      })
     }
 
@@ -58,7 +62,7 @@ const Popular=({navigation})=>{
     
     const renderItem=({ item })=>{
         return(
-            <TouchableOpacity onPress={()=>navigation.navigate('Details',item)}>
+            <TouchableOpacity onPress={()=>props.navigation.navigate('Details',item)}>
             <Card poster={item.poster_path} title={item.title} date={item.release_date}>
 
             </Card>
@@ -71,18 +75,21 @@ const Popular=({navigation})=>{
             <ActivityIndicator style={{marginTop:100,backgroundColor:"black"}} size='large' animating={true}/>
         )
     }
+    var movieList=props.movies
 
     //const navigate=useCallback(({item})=>{navigation.navigate('Details',item)},[item])
-    const ren=({ item })=>{return(<Renderitem item={item} navigation={navigation} />)}
-
+    const ren=({ item })=>{return(<Renderitem item={item} navigation={props.navigation} />)}
+     const {movies}=props
+    
     return(
         <View>
+            <Button title='log' onPress={()=>{console.log(movies)}}/>
             <ActivityIndicator style={{backgroundColor:'black'}} size='large' animating={isLoading}/>
             <FlatGrid
              
              itemDimension={100}
              spacing={10}
-             data={popular}
+             data={movieList}
              style={styles.grid}
              renderItem={ren}  
              initialNumToRender={10}
@@ -91,17 +98,27 @@ const Popular=({navigation})=>{
              onEndReachedThreshold={0.5}
              ListEmptyComponent={showLoading}
                 
-             
-             
-             
-             
-             
             />
            
               
         </View>
       
     )
+}
+
+const mapToProps=(state)=>{
+    return {
+        movies:state.movies,
+        page:state.page
+    }
+}
+const dispatchToProps=(dispatch)=>{
+    return{
+        setMovies:(item)=>{dispatch({type:'SET MOVIES',item:item})},
+        updateMovies:(update)=>{dispatch({type:'UPDATE MOVIES',update:update})},
+        nextPage:()=>{dispatch({type:'NEXT PAGE'})}
+
+    }
 }
 const styles=StyleSheet.create({
     grid:{ 
@@ -111,4 +128,4 @@ const styles=StyleSheet.create({
     },
 })
 
-export default Popular
+export default connect(mapToProps,dispatchToProps)(Popular)
