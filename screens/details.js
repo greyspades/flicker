@@ -16,14 +16,12 @@ import { NavigationActions,useScrollToTop, StackActions } from 'react-navigation
 import Card from '../shared/card'
 import { interpolate } from 'react-native-reanimated'
 //import {useScrollToTop} from '@react-navigation/native';
+import {AfterInteractions} from 'react-native-interactions'
+import Placeholder from '../components/loadingplaceholder'
+import AnimatedSplash from 'react-native-animated-splash-screen'
 
 const Details=({navigation})=>{
-    const [main,setmain]=useState({
-        img:''
-    })
-    const [modal,setmodal]=useState({
-      isvissible:true
-    })
+    const [interactions,setinteractions]=useState(false)
     const [visible,setvisible]=useState({
       overview:false,
       ratemovie:false,
@@ -58,16 +56,17 @@ const Details=({navigation})=>{
       })
 
       useEffect(()=>{
-        InteractionManager.runAfterInteractions(()=>{
+      
           Axios.get(`https://api.themoviedb.org/3/movie/${id}/similar?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=1`)
           .then((res)=>{
             setsimilar(res.data.results)
+            
             
           })
           //navigation.dispatch(resetAction)
         })
        
-      })
+      
       const scrollTop=()=>{
         scrollRef.ScrollTo({y:0,animated:true})
       }
@@ -75,14 +74,22 @@ const Details=({navigation})=>{
       
       
     return (
-        
-           <ImageBackground source={{uri:background}} style={styles.background}>
+        <AfterInteractions placeholder={<AnimatedSplash
+          transluscent={true}
+          isLoaded={false}
+          backgroundColor={'black'}
+          logoImage={require('../components/loading.jpeg')}
+          logoHeight={200}
+          logoWidth={200}
+          />}>
+               <ImageBackground source={{uri:background}} style={styles.background}>
           <View View style={{backgroundColor:'rgba(0,0,0,0.7)'}}>
           <ScrollView style={styles.scroll} ref={scrollRef} >
           
             <ScrollView ref={scrollRef}
             >
             <Image source={{uri:link}} style={styles.image} resizeMode={"stretch"} />
+            
             
             <Text style={styles.title}>{navigation.getParam('title')}</Text>
             
@@ -163,7 +170,7 @@ const Details=({navigation})=>{
             </View>
             
             
-            <Button title={'log'} onPress={scrollTop}></Button>
+            <Button title={'log'} onPress={()=>{console.log(similar)}}></Button>
             <View style={styles.line}></View>
            
             </ScrollView>
@@ -179,7 +186,7 @@ const Details=({navigation})=>{
 
            data={similar}
            horizontal={true}
-           keyExtractor={()=>similar.id}
+           keyExtractor={(key)=>{key.id}}
            renderItem={({item})=>(
             <TouchableOpacity onPress={()=>{navigation.navigate('Details', item),setrefresh(true)}}>
             <Card poster={item.poster_path} title={item.title} date={item.release_date} refresh={refresh}>
@@ -197,7 +204,7 @@ const Details=({navigation})=>{
 
           </ImageBackground>   
         
-           
+        </AfterInteractions>   
     )
 }
 

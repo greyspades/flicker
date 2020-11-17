@@ -12,19 +12,21 @@ import movieReducer from './redux/reducers/moviereducer'
 import Homestack from './routes/stack'
 import SeriesStack from './routes/trendstack'
 import {enableScreens} from 'react-native-screens'
+import Placeholder from './components/loadingplaceholder'
+import AnimatedSplash from 'react-native-animated-splash-screen'
+import {connect} from'react-redux'
 
-
-export default function App() {
-  const [main,setmain]=useState([
-    {task:'be awesome',difficulty:9,time:[7,30,7],key:1},
-    {task:'build an app',difficulty:5,time:[11,0,7],key:4},
-    {task:'design something',difficulty:6,time:[9,30,3],key:3}])
+function App() {
+  const [main,setmain]=useState(true)
   const set=(e)=>{
     setmain({name2:e.target.value})
     e.preventDefault();
   }
   useEffect(()=>{
-    //getapi()
+    setTimeout(() => {
+      setmain(false)
+    }, 3000);
+    
   })
 
   const store=createStore(movieReducer)
@@ -33,12 +35,30 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Provider  store={store}>
+
         <Drawer />
+        
+       
       </Provider>
 
     </View> 
   );
+  
 }
+const mapToProps=(state)=>{
+  return{
+    splash:state.showSplash
+  }
+}
+
+const mapDispatchToProps=(dispatch)=>{
+    return{
+      hideSplash:()=>{dispatch({type:'CLOSE SPLASH',})},
+      showSplash:()=>{dispatch({type:'SHOW SPLASH'})}
+    }
+}
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -73,3 +93,5 @@ const styles = StyleSheet.create({
 
   }
 });
+
+export default App

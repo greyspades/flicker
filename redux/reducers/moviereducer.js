@@ -1,10 +1,12 @@
+import { ActivityIndicator } from "react-native"
 
 
 const initialState={
     movies:[],
     series:[],
     page:1,
-    update:[]
+    update:[],
+    showSplash:true,
 }
 
 const movieReducer=(state=initialState,action)=>{
@@ -32,6 +34,18 @@ const movieReducer=(state=initialState,action)=>{
             update:[...state.movies,action.update]
         }
 
+    }
+    else if(action.type=='CLOSE SPLASH'){
+        return {
+            ...state,
+            showSplash:false,
+        }
+    }
+    else if(action.type=='SHOW SPLASH'){
+        return {
+            ...state,
+            showSplash:true
+        }
     }
    
     

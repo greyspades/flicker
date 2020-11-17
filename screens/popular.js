@@ -6,6 +6,8 @@ import {SectionGrid,FlatGrid} from 'react-native-super-grid'
 import FastImage from 'react-native-fast-image'
 import Renderitem from '../components/renderitem'
 import {connect} from 'react-redux'
+import { NavigationActions } from 'react-navigation'
+
 
 
 
@@ -19,10 +21,16 @@ const Popular=(props)=>{
     const [isLoading,setIsLoading]=useState(false)
     
     useEffect(()=>{
-        InteractionManager.runAfterInteractions(()=>{
-            getapi()
-        })
-        
+            let isCancelled=false;
+            Axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${props.page}`)
+            .then((res)=>{
+            if(!isCancelled){
+                props.setMovies(res.data.results)
+            }
+            })
+            return ()=>{
+                isCancelled=true;
+            }
         //getrest()
     })
 
@@ -58,6 +66,13 @@ const Popular=(props)=>{
     function nav(item){
         navigation.navigate('Details',item);
         
+    }
+    const clearNav=()=>{
+        props.navigation.dispatch(NavigationActions.reset({
+            index:0,
+            key:null,
+            actions:[NavigationActions.navigate({routeName:'Popular'})]
+        }))
     }
     
     const renderItem=({ item })=>{

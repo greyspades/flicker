@@ -3,7 +3,7 @@ import {StyleSheet,Text,View,ImageBackground} from 'react-native'
 import {MaterialIcons} from '@expo/vector-icons'
 import { color } from 'react-native-reanimated';
 import Axios from 'axios'
-import FastImage from 'react-native-fast-image'
+
 
 
 const Card =(props)=>{
@@ -43,8 +43,7 @@ const Card =(props)=>{
         </View>
         
         <Text style={{marginBottom:0,color:'white',fontSize:15,marginLeft:3}} ellipsizeMode='tail' numberOfLines={1}>{title}</Text>
-        <Text style={{color:'white',fontSize:12,marginTop:1,marginLeft:3}}>{props.date}</Text>
-        <Text style={{color:'white',fontSize:12,marginTop:1,marginLeft:3}}>{props.series_date}</Text>
+
         
         </View>
       
@@ -79,7 +78,7 @@ const styles=StyleSheet.create({
     },
     back:{
         width:100,
-        height:190,
+        height:175,
         backgroundColor:'maroon',
         display:'flex',
         borderBottomLeftRadius:10,
@@ -87,10 +86,13 @@ const styles=StyleSheet.create({
         //borderBottomEndRadius:20,
         //height:200,
         //flexDirection:'row'
-        marginLeft:18
+        marginLeft:18,
+        
+        
     },
     title:{
-        color:'white'
+        color:'white',
+        
     }
 })
 

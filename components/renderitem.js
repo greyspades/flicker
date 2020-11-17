@@ -3,8 +3,9 @@ import Card from '../shared/card'
 import { Text, View,StyleSheet,TouchableOpacity,InteractionManager,ActivityIndicator } from 'react-native'
 import Details from '../screens/details'
 import {AfterInteractions} from 'react-native-interactions'
+import {StackActions, NavigationActions} from 'react-navigation'
 
-const Renderitem=({item,navigation})=>{
+const Renderitem=(props)=>{
     /*const [main,setmain]=useState({
         defer:false
     })
@@ -23,11 +24,15 @@ const Renderitem=({item,navigation})=>{
                 <Text style={{color:'white'}}>loading....</Text>
             )
         }*/
+        const resetAction=StackActions.reset({
+            index:0,
+            actions:[NavigationActions.navigate({routeName:'Details'})]
+        })
     
         return(
             <View>
-            <TouchableOpacity onPress={()=>navigation.navigate('Details',item)}>
-            <Card poster={item.poster_path} title={item.title} date={item.release_date} series_date={item.first_air_date}>
+            <TouchableOpacity onPress={()=>{props.navigation.navigate('Details',props.item)}}>
+            <Card poster={props.item.poster_path} title={props.item.title} date={props.item.release_date} series_date={props.item.first_air_date}>
 
             </Card>
 
