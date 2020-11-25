@@ -15,6 +15,10 @@ import { NavigationActions,useScrollToTop } from 'react-navigation'
 //import { FlatList } from 'react-native-gesture-handler'
 import SeriesCard from '../shared/card'
 //import {useScrollToTop} from '@react-navigation/native';
+import {AfterInteractions} from 'react-native-interactions'
+import Placeholder from '../components/loadingplaceholder'
+import AnimatedSplash from 'react-native-animated-splash-screen'
+import {widthPercentageToDP as wp,heightPercentageTODP as hp} from 'react-native-responsive-screen'
 
 const SeriesDetails=({navigation})=>{
     const [main,setmain]=useState({
@@ -41,7 +45,7 @@ const SeriesDetails=({navigation})=>{
 
       var backdrop=navigation.getParam('backdrop_path')
 
-      var id=navigation.getParam('id')
+      var id2=navigation.getParam('id')
 
       const scrollRef=useRef();
 
@@ -52,18 +56,31 @@ const SeriesDetails=({navigation})=>{
       const link2='https://image.tmdb.org/t/p/original/2TeJfUZMGolfDdW6DKhfIWqvq8y.jpg'
 
       useEffect(()=>{
-        Axios.get(`https://api.themoviedb.org/3/tv/${id}/similar?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=1`)
+        let canceled=false
+        Axios.get(`https://api.themoviedb.org/3/tv/${id2}/similar?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=1`)
         .then((res)=>{
+        if(!canceled){
           setsimilar(res.data.results)
+        }
         })
+        return ()=>{
+          canceled=true
+        }
       })
       const scrollTop=()=>{
         scrollRef.ScrollTo({y:0,animated:true})
       }
       
     return (
-        
-           <ImageBackground source={{uri:link}} style={styles.background}>
+      <AfterInteractions placeholder={<AnimatedSplash
+        transluscent={true}
+        isLoaded={false}
+        backgroundColor={'black'}
+        logoImage={require('../assets/logo.jpg')}
+        logoHeight={'100%'}
+        logoWidth={'100%'}
+        />}>
+              <ImageBackground source={{uri:link}} style={styles.background}>
           <View View style={{backgroundColor:'rgba(0,0,0,0.7)'}}>
           <ScrollView style={styles.scroll} ref={scrollRef} >
           
@@ -150,7 +167,7 @@ const SeriesDetails=({navigation})=>{
             </View>
             
             
-            <Button title={'log'} onPress={scrollTop}></Button>
+
             <View style={styles.line}></View>
            
             </ScrollView>
@@ -166,7 +183,7 @@ const SeriesDetails=({navigation})=>{
 
            data={similar}
            horizontal={true}
-           keyExtractor={()=>similar.id}
+           keyExtractor={(key)=>{key.id}}
            renderItem={({item})=>(
             <TouchableOpacity onPress={()=>{navigation.navigate('Details', item),setrefresh(true)}}>
             <SeriesCard poster={item.poster_path} title={item.name} date={item.first_air_date} refresh={refresh}>
@@ -183,7 +200,11 @@ const SeriesDetails=({navigation})=>{
           </View>
 
           </ImageBackground>   
+  
+
+      </AfterInteractions>
         
+             
            
     )
 }
@@ -242,16 +263,17 @@ const styles=StyleSheet.create({
       borderRadius:15,
       //color:'black'
       //backgroundColor:'black'
-      
-
-      
+   
     },
     image:{
       //flex:1
       marginBottom:30,
-      width:370,
-      height:300,
-      marginLeft:20,
+      width:wp('95%'),
+      height:220,
+      justifyContent:'center',
+      alignContent:"center",
+      marginHorizontal:wp('2.5%'),
+      
 
     },
     over:{
@@ -259,26 +281,27 @@ const styles=StyleSheet.create({
       marginBottom:300
     },
     line:{
-      width:400,
+      width:wp('90%'),
       height:3,
-      backgroundColor:'white',
+      backgroundColor:'maroon',
       opacity:0.5,
-      marginLeft:15,
+      marginHorizontal:wp('5%')
       //marginTop:70
   },
   icon:{
-    color:'white',
-    marginLeft:100
+    color:'maroon',
+    marginLeft:40
 },
 date:{
   color:'white',
-  fontSize:20
+  fontSize:20,
+  marginRight:5
 },
 infocontainer:{
   flex:2,
   flexDirection:'row',
   marginBottom:20,
-  marginLeft:15,
+  marginHorizontal:wp('3%'),
   marginTop:20
 }
 

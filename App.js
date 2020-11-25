@@ -15,17 +15,18 @@ import {enableScreens} from 'react-native-screens'
 import Placeholder from './components/loadingplaceholder'
 import AnimatedSplash from 'react-native-animated-splash-screen'
 import {connect} from'react-redux'
+import Registration from './screens/register'
 
 function App() {
-  const [main,setmain]=useState(true)
+  const [main,setmain]=useState(false)
   const set=(e)=>{
     setmain({name2:e.target.value})
     e.preventDefault();
   }
   useEffect(()=>{
-    setTimeout(() => {
-      setmain(false)
-    }, 3000);
+   setTimeout(() => {
+     setmain(true)
+   }, 3000);
     
   })
 
@@ -36,8 +37,16 @@ function App() {
     <View style={styles.container}>
       <Provider  store={store}>
 
-        <Drawer />
-        
+      <AnimatedSplash
+          transluscent={true}
+          isLoaded={main}
+          backgroundColor={'black'}
+          logoImage={require(('./assets/logo.jpg'))}
+          logoHeight={'100%'}
+          logoWidth={'100%'}
+          >
+            <Drawer />
+          </AnimatedSplash>      
        
       </Provider>
 

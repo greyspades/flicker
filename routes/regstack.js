@@ -8,11 +8,47 @@ import Header from '../shared/header'
 import Popular from '../screens/popular'
 import Renderitem from '../components/renderitem'
 import SeriesDetails from '../screens/seriesdetails'
-
-
+import Registration from '../screens/register'
+import Success from '../screens/success'
+import LogIn from '../screens/login'
 
 const screens={
-
+    login:{
+        screen:LogIn,
+        navigationOptions:({navigation})=>{
+            return{
+                headerStyle:{
+                    backgroundColor:'maroon',
+                    
+                },
+                header:null,
+            }
+        }
+    },
+    Register:{
+        screen:Registration,
+        navigationOptions:({navigation})=>{
+            return{
+                headerStyle:{
+                    backgroundColor:'maroon',
+                    
+                },
+                header:null,
+            }
+        }
+     
+    },
+    
+   success:{
+    screen:Success,
+    navigationOptions:({navigation})=>{
+     return{
+        header:null
+     }
+ }
+},
+    
+  
     Home:{
         screen:Popular,
         navigationOptions:({navigation})=>{
@@ -29,16 +65,7 @@ const screens={
         
     },
 
-    Details:{
-        screen:Details,
-        navigationOptions:{
-            title:'Details',
-            header:null,
-            headerStyle:{
-                backgroundColor:'maroon',
-            }
-        }
-    },
+    
     
     SeriesDetails:{
         screen:SeriesDetails,
@@ -54,6 +81,6 @@ const screens={
     }
 }
 
-const Homestack=createStackNavigator(screens);
+const regStack=createStackNavigator(screens);
 
-export default createAppContainer(Homestack);
+export default createAppContainer(regStack);

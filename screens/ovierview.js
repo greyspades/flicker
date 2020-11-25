@@ -33,9 +33,7 @@ const Overview=(props)=>{
         <View>
 
             {show()}
-            <TouchableOpacity onPress={toggle}>
-            <Mybutton title={'overview'} />
-            </TouchableOpacity>
+          
         </View>
     )
 }

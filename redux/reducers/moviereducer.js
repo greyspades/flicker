@@ -1,4 +1,5 @@
 import { ActivityIndicator } from "react-native"
+import { ScaleAnimation } from "react-native-modals"
 
 
 const initialState={
@@ -7,6 +8,12 @@ const initialState={
     page:1,
     update:[],
     showSplash:true,
+    series:[],
+    seriesUpdate:[],
+    isLogedIn:true,
+    userInfo:{},
+    favourites:[],
+
 }
 
 const movieReducer=(state=initialState,action)=>{
@@ -31,7 +38,7 @@ const movieReducer=(state=initialState,action)=>{
             ...state,
             //...state.update,
             //update:[...state.update,...action.update]
-            update:[...state.movies,action.update]
+            update:[...state.movies,action.update.shift()]
         }
 
     }
@@ -45,6 +52,31 @@ const movieReducer=(state=initialState,action)=>{
         return {
             ...state,
             showSplash:true
+        }
+    }
+    else if(action.type=='SET SERIES'){
+        return {
+            ...state,
+            series:[...state.seriesUpdate,...action.item]
+        }
+    }
+    else if(action.type=='UPDATE SERIES'){
+        return {
+            ...state,
+            seriesUpdate:[...state.series,action.item.shift()]
+        }
+    }
+    else if(action.type=='LOG IN'){
+        return {
+            ...state,
+            isLogedIn:action.user.status,
+            userInfo:action.user.info,
+        }
+    }
+    else if(action.type=='ADD TO FAVOURITES') {
+        return {
+            ...state,
+            favourites:action.item
         }
     }
    

@@ -32,7 +32,10 @@ const screens={
     SeriesDetails:{
         screen:SeriesDetails,
         navigationOptions:{
-            title:'SeriesDetails'
+            title:'SeriesDetails',
+            headerStyle:{
+                backgroundColor:'maroon',
+            }
         }
     },
 }

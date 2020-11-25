@@ -3,6 +3,7 @@ import {StyleSheet,Text,View,ImageBackground} from 'react-native'
 import {MaterialIcons} from '@expo/vector-icons'
 import { color } from 'react-native-reanimated';
 import Axios from 'axios'
+import {widthPercentageToDP as wp,heightPercentageTODP as hp} from 'react-native-responsive-screen'
 
 
 
@@ -86,7 +87,9 @@ const styles=StyleSheet.create({
         //borderBottomEndRadius:20,
         //height:200,
         //flexDirection:'row'
-        marginLeft:18,
+        marginLeft:wp('1%'),
+        alignContent:"center",
+        justifyContent:"center",
         
         
     },

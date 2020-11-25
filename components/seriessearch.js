@@ -6,6 +6,7 @@ import {AntDesign} from '@expo/vector-icons'
 import Axios from 'axios';
 import SeriesCard from '../shared/seriescards'
 import renderitem from './renderitem';
+import {widthPercentageToDP as wp,heightPercentageTODP as hp} from 'react-native-responsive-screen'
 
 
 const seriesSearchbar=(props)=>{
@@ -43,7 +44,7 @@ const seriesSearchbar=(props)=>{
             <TextInput style={styles.form}
             placeholder='Movie Title'
             onChangeText={handleChange('movie')} value={values.movie}/>
-            <MaterialIcons name='search' size={40} onPress={handleSubmit} style={{color:'white', marginLeft:340,marginTop:-40,backgroundColor:'maroon',borderBottomRightRadius:5,borderTopRightRadius:5,width:40}} />
+            <MaterialIcons name='search' size={40} onPress={handleSubmit} style={{color:'white',marginLeft:wp('80%'),marginTop:-40,backgroundColor:'maroon',borderBottomRightRadius:5,borderTopRightRadius:5,width:40}} />
         </View>
     )}
 
@@ -73,7 +74,7 @@ const styles=StyleSheet.create({
         width:250,
         height:40,
         backgroundColor:'white',
-        marginLeft:80,
+        marginLeft:wp('10%'),
         marginTop:20,
         borderTopLeftRadius:10,
         borderBottomLeftRadius:10,
@@ -82,10 +83,11 @@ const styles=StyleSheet.create({
         textAlign:'center',
 
 
+
     },
     modal:{
         backgroundColor:'grey',
-        height:500
+        height:350
     }
 })
 

@@ -7,6 +7,7 @@ import FastImage from 'react-native-fast-image'
 import Renderitem from '../components/renderitem'
 import {connect} from 'react-redux'
 import { NavigationActions } from 'react-navigation'
+import {widthPercentageToDP as wp,heightPercentageTODP as hp} from 'react-native-responsive-screen'
 
 
 
@@ -16,7 +17,7 @@ const Popular=(props)=>{
     const [main,setmain]=useState(movies)       
  
     //const [page,setpage]=useState(1)
-    const [loading,setloading]=useState([])
+    const [loaded,setloaded]=useState(false)
     const [prev,setprev]=useState([])
     const [isLoading,setIsLoading]=useState(false)
     
@@ -26,6 +27,8 @@ const Popular=(props)=>{
             .then((res)=>{
             if(!isCancelled){
                 props.setMovies(res.data.results)
+                setloaded(true)
+            
             }
             })
             return ()=>{
@@ -97,8 +100,8 @@ const Popular=(props)=>{
      const {movies}=props
     
     return(
-        <View>
-            <Button title='log' onPress={()=>{console.log(movies)}}/>
+        <View style={{flex:1}}>
+          
             <ActivityIndicator style={{backgroundColor:'black'}} size='large' animating={isLoading}/>
             <FlatGrid
              
@@ -112,7 +115,7 @@ const Popular=(props)=>{
              onEndReached={getrest}
              onEndReachedThreshold={0.5}
              ListEmptyComponent={showLoading}
-                
+   
             />
            
               
@@ -139,6 +142,7 @@ const styles=StyleSheet.create({
     grid:{ 
         //marginTop:20,
         backgroundColor:'black',
+        
         
     },
 })

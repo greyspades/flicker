@@ -6,9 +6,11 @@ import {SectionGrid,FlatGrid} from 'react-native-super-grid'
 //import FastImage from 'react-native-fast-image'
 import Renderitem from '../components/renderitem'
 import SeriesCard from '../shared/seriescards'
+import {connect} from 'react-redux'
+import {widthPercentageToDP as wp,heightPercentageTODP as hp} from 'react-native-responsive-screen'
 
 
-const Series = ({navigation}) => {
+const Series = (props) => {
     /*const [main,setmain]=useState([])
     
     const getSeries=()=>{
@@ -28,36 +30,30 @@ const Series = ({navigation}) => {
     const [isLoading,setIsLoading]=useState(false)
     
     useEffect(()=>{
-        getapi()
-        //getrest()
+       let isCancelled=false;
+       Axios.get(`https://api.themoviedb.org/3/tv/popular?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${page}`)
+       .then((res)=>{
+        if(!isCancelled){
+            props.setSeries(res.data.results)
+        }
     })
-
-    const log=()=>{
-        console.log(popular)
-       //getapi()
+    return ()=>{
+        isCancelled=true;
     }
-    const display=()=>{
-        return(
-            <View>
-                
-            </View>
-        )
-    }
-    
-    var pop=popular
-    var next=[]
+    })
 
     const getapi=()=>{
      Axios.get(`https://api.themoviedb.org/3/tv/popular?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${page}`)
      .then((res)=>{
-        setpopular([...loading,...res.data.results])
+        //setpopular([...loading,...res.data.results])
+        props.setSeries(res.data.results)
      })
     }
     const getrest=()=>{
         setpage(page+1)
         Axios.get(`https://api.themoviedb.org/3/tv/popular?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${page}`)
      .then((res)=>{
-        setloading([...loading,...res.data.results])
+        props.updateSeries(res.data.results)
      })
     }
 
@@ -68,7 +64,7 @@ const Series = ({navigation}) => {
     
     const renderItem=({ item })=>{
         return(
-            <TouchableOpacity onPress={()=>navigation.navigate('SeriesDetails',item)}>
+            <TouchableOpacity onPress={()=>props.navigation.navigate('SeriesDetails',item)}>
             <SeriesCard poster={item.poster_path} title={item.name} date={item.first_air_date}>
 
             </SeriesCard>
@@ -88,25 +84,19 @@ const Series = ({navigation}) => {
     return(
         <View>
             <ActivityIndicator style={{backgroundColor:'black'}} size='large' animating={isLoading}/>
-            <Button onPress={()=>{console.log(popular)}} title={'log series'} />
+
             <FlatGrid
-             
+            
              itemDimension={100}
              spacing={10}
-             data={popular}
+             data={props.series}
              style={styles.grid}
              renderItem={renderItem}  
              initialNumToRender={10}
              maxToRenderPerBatch={10}
              onEndReached={getrest}
              onEndReachedThreshold={0.5}
-             ListEmptyComponent={showLoading}
-                
-             
-             
-             
-             
-             
+            
             />
            
               
@@ -114,14 +104,27 @@ const Series = ({navigation}) => {
       
     )
 }
+const mapStateToProps=(state)=>{
+    return {
+        series:state.series,
+        update:state.update,
+    }
+}
+const mapDispatchToProps=(dispatch)=>{
+    return {
+        setSeries:(item)=>{dispatch({type:'SET SERIES',item:item})},
+        updateSeries:(item)=>{dispatch({type:'UPDATE SERIES', item:item})}
+    }
+}
 const styles=StyleSheet.create({
     grid:{ 
         //marginTop:20,
         backgroundColor:'black',
+
         
     },
 })
 
 
 
-export default Series
+export default connect(mapStateToProps,mapDispatchToProps)(Series)
