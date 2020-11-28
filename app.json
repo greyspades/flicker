@@ -4,15 +4,14 @@
     "slug": "myapp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.jpg'",
+    "icon": "./assets/icon2.png'",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "android": {
-      "package": "com.grey.flickmeet",
-      "versionCode": 1
+      "package": "com.grey.flickmeet"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
