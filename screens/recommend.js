@@ -67,7 +67,7 @@ const Register=(props)=>{
         useEffect(()=>{
             let mounted=true
             if(mounted){
-              Axios.get(`https://flickmeet-1.herokuapp.com/${props.info.username}`)
+              Axios.get(`https://flickmeet-1.herokuapp.com/get_user/${props.info.username}`)
               .then((res)=>{
                   console.log(res.data)
                     setUser(res.data)
@@ -135,6 +135,7 @@ const Register=(props)=>{
              <LinearGradient  colors={["maroon", "maroon", "purple"]}
         style={{width:300,height:600,backgroundColor:'maroon',marginHorizontal:wp('8'),
         borderRadius:10,marginTop:wp('10%'),}}>
+            <Button title='lof' onPress={()=>{console.log(user)}} />
         {showfriend()}
         </LinearGradient>
      
