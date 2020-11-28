@@ -186,7 +186,7 @@ const Details=(props)=>{
                title:props.navigation.getParam('title')
              }
              setSpin(true)
-                   Axios.post(`http://192.168.43.62:5000/rate`,{item})
+                   Axios.post(`https://flickmeet-1.herokuapp.com/rate`,{item})
                     .then((res)=>{
                       if(res.data=='SAVED'){
                         setRate(false)
@@ -239,7 +239,7 @@ const Details=(props)=>{
         if(liked||props.info.favourites.includes(title)){
           return (
             <TouchableOpacity onPress={()=>{
-              Axios.get(`http://192.168.43.62:5000/remove_from_fav/${props.navigation.getParam('title')}/${props.info.username}`)
+              Axios.get(`https://flickmeet-1.herokuapp.com/remove_from_fav/${props.navigation.getParam('title')}/${props.info.username}`)
               .then((res)=>{
                 
               })
@@ -293,7 +293,7 @@ const Details=(props)=>{
           username:props.info.username,
           title:props.navigation.getParam('title')
         }
-        Axios.post(`http://192.168.43.62:5000/add_to_favourites`,{fav})
+        Axios.post(`https://flickmeet-1.herokuapp.com/add_to_favourites`,{fav})
         .then((res)=>{
           console.log(res.data)
           setLiked(true)

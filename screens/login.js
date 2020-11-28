@@ -74,7 +74,7 @@ const LogIn=(props)=>{
         borderRadius:10,marginTop:wp('30%'),}}>
             <Formik initialValues={{username:'',password:''}} onSubmit={(values)=>{
                 let user={
-                    username:values.username,
+                    username:values.username.toLowerCase(),
                     password:values.password,
                 }
                 setSpin(true)

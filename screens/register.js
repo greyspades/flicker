@@ -117,7 +117,7 @@ const Registration
                                   <AntDesign style={{marginBottom:40,marginLeft:wp('5%')}} name='close' size={40} color='white' onPress={()=>{props.navigation.push('Home')}}/>
         <Formik initialValues={{username:'',mail:'',password:'',genre:[]}}  onSubmit={(values,event)=>{
                     let user={
-                        username:values.username,
+                        username:values.username.toLowerCase(),
                         mail:values.mail,
                         password:values.password,
                         genres:genre

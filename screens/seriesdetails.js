@@ -131,12 +131,12 @@ const SeriesDetails=(props)=>{
          </View>
          <Formik initialValues={{review:''}} onSubmit={(values)=>{
            let item={
-             user:props.info.username,
+             user:props.info.username.t,
              review:values.review,
              rating:userRating,
              title:props.navigation.getParam('name')
            }
-                 Axios.post(`http://192.168.43.62:5000/rate`,{item})
+                 Axios.post(`https://flickmeet-1.herokuapp.com/rate`,{item})
                   .then((res)=>{
                     if(res.data=='SAVED'){
                       setRate(false)
