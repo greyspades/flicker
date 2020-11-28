@@ -60,7 +60,7 @@ const Header=(props)=>{
                 <Formik initialValues={{user:''}} onSubmit={(values)=>{
                     let item={
                         username:props.info.username,
-                        search:values.user,
+                        search:values.user.toLowerCase(),
                     }
                     //let person=values.user
                     Axios.post(`https://flickmeet-1.herokuapp.com/send_friend_request`,{item})
