@@ -49,7 +49,7 @@ const Register=(props)=>{
             }
          //let canceled=false
          //if(!canceled){
-            Axios.post(`http://192.168.43.62:5000/recommend`,{item})
+            Axios.post(`https://flickmeet-1.herokuapp.com/recommend`,{item})
             .then((res)=>{
                 if(res.data=='RECOMMENDED'){
                     //setAlert(true)
@@ -67,7 +67,7 @@ const Register=(props)=>{
         useEffect(()=>{
             let mounted=true
             if(mounted){
-              Axios.get(`http://192.168.43.62:5000/get_user/${props.info.username}`)
+              Axios.get(`https://flickmeet-1.herokuapp.com/${props.info.username}`)
               .then((res)=>{
                   console.log(res.data)
                     setUser(res.data)

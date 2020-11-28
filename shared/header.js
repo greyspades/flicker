@@ -150,11 +150,11 @@ const Header=(props)=>{
           confirmText='Cancel'
           confirmButtonColor="maroon"
           onCancelPressed={() => {
-            setShowAlert(false)
+            setError(false)
             
           }}
           onConfirmPressed={() => {
-            setShowAlert(false)
+            setError(false)
             setShowAdd(false)
           }}
         />

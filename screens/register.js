@@ -123,7 +123,7 @@ const Registration
                         genres:genre
                     }
                     setSpin(true)
-                Axios.post(`http://192.168.43.62:5000/add_user`,{user})
+                Axios.post(`https://flickmeet-1.herokuapp.com/add_user`,{user})
                 .then((res)=>{
                    if(res.data=='SAVED'){
                       
@@ -141,9 +141,9 @@ const Registration
                {({handleChange,handleBlur,handleSubmit,values})=>((
                    <View>
                        
-                        <Text style={{color:'white',fontSize:25,marginHorizontal:wp('27%'),marginTop:wp('1$')}}>Register</Text>
+                        <Text style={{color:'white',fontSize:25,marginHorizontal:wp('27%'),marginTop:wp('-15%')}}>Register</Text>
                         <TextInput style={{width:250,height:30,marginHorizontal:wp('7%'),
-                        color:'white',fontSize:20,marginTop:wp('15%')
+                        color:'white',fontSize:20,marginTop:wp('10%')
 
                         }}
                         
