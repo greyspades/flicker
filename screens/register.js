@@ -127,7 +127,7 @@ const Registration
                 .then((res)=>{
                    if(res.data=='SAVED'){
                       
-                        props.navigation.replace('success',{name:values.username})
+                        props.navigation.replace('success')
                         setSpin(false)
 
                     }
