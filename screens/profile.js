@@ -28,7 +28,7 @@ const Profile=(props)=>{
     useEffect(()=>{
       let mounted=true
       if(mounted){
-        Axios.get(`http://192.168.43.62:5000/get_user/${props.info.username}`)
+        Axios.get(`https://flickmeet-1.herokuapp.com/get_user/${props.info.username}`)
         .then((res)=>{
             setmain(res.data)
             setLoaded(true)

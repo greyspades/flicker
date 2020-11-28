@@ -78,7 +78,7 @@ const LogIn=(props)=>{
                     password:values.password,
                 }
                 setSpin(true)
-                   Axios.post(`http://192.168.43.62:5000/log_in`,{user})
+                   Axios.post(`https://flickmeet-1.herokuapp.com/log_in`,{user})
                    .then((res)=>{
                     if(res.data.status=='LOG IN'){
                         props.logIn(res.data)

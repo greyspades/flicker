@@ -63,7 +63,7 @@ const Header=(props)=>{
                         search:values.user,
                     }
                     //let person=values.user
-                    Axios.post(`http://192.168.43.62:5000/send_friend_request`,{item})
+                    Axios.post(`https://flickmeet-1.herokuapp.com/send_friend_request`,{item})
                     .then((res)=>{
                         if(res.data=='REQUEST SENT'){
                             setShowAlert(true)
