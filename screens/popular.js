@@ -8,6 +8,8 @@ import Renderitem from '../components/renderitem'
 import {connect} from 'react-redux'
 import { NavigationActions } from 'react-navigation'
 import {widthPercentageToDP as wp,heightPercentageTODP as hp} from 'react-native-responsive-screen'
+//import AnimatedLoader from 'react-native-animated-loader'
+import Spinner from 'react-native-loading-spinner-overlay';
 
 
 
@@ -20,6 +22,7 @@ const Popular=(props)=>{
     const [loaded,setloaded]=useState(false)
     const [prev,setprev]=useState([])
     const [isLoading,setIsLoading]=useState(false)
+    const [spinner,setSpinner]=useState(false)
     
     useEffect(()=>{
             let isCancelled=false;
@@ -34,7 +37,10 @@ const Popular=(props)=>{
             return ()=>{
                 isCancelled=true;
             }
-        //getrest()
+            setInterval(() => {
+                setSPinner(false);
+              }, 3000);
+        
     })
 
     const log=()=>{
@@ -103,6 +109,14 @@ const Popular=(props)=>{
         <View style={{flex:1}}>
           
             <ActivityIndicator style={{backgroundColor:'black'}} size='large' animating={isLoading}/>
+            <Spinner
+          visible={false}
+          textContent={'Loading...'}
+          color='maroon'
+          size={'large'}
+          
+          
+        />
             <FlatGrid
              
              itemDimension={100}

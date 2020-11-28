@@ -8,10 +8,46 @@ import Header from '../shared/header'
 import Popular from '../screens/popular'
 import Renderitem from '../components/renderitem'
 import SeriesDetails from '../screens/seriesdetails'
-
-
+import Recommend from '../screens/recommend'
+import Video from '../components/video'
+import Login from '../screens/login'
+import Registration from '../screens/register'
+import Success from '../screens/success'
 
 const screens={
+
+    Login:{
+        screen:Login,
+        navigationOptions:{
+            title:'Login',
+            header:null,
+            headerStyle:{
+                backgroundColor:'maroon',
+            }
+        }
+    },
+    Register:{
+        screen:Registration,
+        navigationOptions:({navigation})=>{
+            return{
+                headerStyle:{
+                    backgroundColor:'maroon',
+                    
+                },
+                header:null,
+            }
+        }
+     
+    },
+    
+   success:{
+    screen:Success,
+    navigationOptions:({navigation})=>{
+     return{
+        header:null
+     }
+ }
+},
 
     Home:{
         screen:Popular,
@@ -39,11 +75,33 @@ const screens={
             }
         }
     },
+    Recommend:{
+        screen:Recommend,
+        navigationOptions:{
+            title:'Recommend',
+            //header:null,
+            headerTintColor:'white',
+            headerStyle:{
+                backgroundColor:'maroon',
+            }
+        }
+    },
+    Video:{
+        screen:Video,
+        navigationOptions:{
+            title:'Details',
+            header:null,
+            headerStyle:{
+                backgroundColor:'maroon',
+            }
+        }
+    },
     
     SeriesDetails:{
         screen:SeriesDetails,
         navigationOptions:{
-            title:'SeriesDetails'
+            title:'SeriesDetails',
+            header:null
         }
     },
 

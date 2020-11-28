@@ -7,6 +7,7 @@ import {createAppContainer} from 'react-navigation'
 import SeriesHeader from '../components/seriesheader'
 import Trending from '../screens/trending'
 import Series from '../screens/series'
+import Recommend from '../screens/recommend'
 
 
 
@@ -28,16 +29,32 @@ const screens={
             }
         }  
     },
+    
 
     SeriesDetails:{
         screen:SeriesDetails,
         navigationOptions:{
-            title:'SeriesDetails',
+            title:'Details',
+            header:null,
             headerStyle:{
                 backgroundColor:'maroon',
             }
         }
     },
+    Recommend:{
+        screen:Recommend,
+        navigationOptions:{
+            title:'Recommend',
+            //header:null,
+            headerStyle:{
+                backgroundColor:'maroon',
+                
+            },
+            headerTintColor:'white'
+        }
+    },
+    
+
 }
 
 const SeriesStack=createStackNavigator(screens);

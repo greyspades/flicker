@@ -14,8 +14,10 @@ import SeriesStack from './routes/trendstack'
 import {enableScreens} from 'react-native-screens'
 import Placeholder from './components/loadingplaceholder'
 import AnimatedSplash from 'react-native-animated-splash-screen'
-import {connect} from'react-redux'
+import Video from './components/video'
 import Registration from './screens/register'
+import Spinner from 'react-native-loading-spinner-overlay';
+
 
 function App() {
   const [main,setmain]=useState(false)
@@ -45,7 +47,7 @@ function App() {
           logoHeight={'100%'}
           logoWidth={'100%'}
           >
-            <Drawer />
+          <Drawer />
           </AnimatedSplash>      
        
       </Provider>
@@ -54,13 +56,13 @@ function App() {
   );
   
 }
-const mapToProps=(state)=>{
+const mapState=(state)=>{
   return{
     splash:state.showSplash
   }
 }
 
-const mapDispatchToProps=(dispatch)=>{
+const mapDispatch=(dispatch)=>{
     return{
       hideSplash:()=>{dispatch({type:'CLOSE SPLASH',})},
       showSplash:()=>{dispatch({type:'SHOW SPLASH'})}

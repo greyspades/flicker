@@ -10,7 +10,7 @@ const initialState={
     showSplash:true,
     series:[],
     seriesUpdate:[],
-    isLogedIn:true,
+    isLogedIn:false,
     userInfo:{},
     favourites:[],
 

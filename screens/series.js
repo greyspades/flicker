@@ -84,6 +84,7 @@ const Series = (props) => {
     return(
         <View>
             <ActivityIndicator style={{backgroundColor:'black'}} size='large' animating={isLoading}/>
+         
 
             <FlatGrid
             

@@ -1,5 +1,5 @@
-import React, { PureComponent, useState,useEffect,useRef } from 'react'
-import { Text,RefreshControl, View,Button,StyleSheet,Image,ScrollView,ImageBackground,Form,FlatList,TouchableOpacity,InteractionManager,TextInput} from 'react-native'
+import React, { PureComponent,useF, useState,useEffect,useRef,useCallback } from 'react'
+import { Text,RefreshControl, View,Button,BackHandler,StyleSheet,Image,ScrollView,ImageBackground,Form,FlatList,TouchableOpacity,InteractionManager,TextInput} from 'react-native'
 import Axios from 'axios'
 //import Modal,{ModalContent,Backdrop} from 'react-native-modals'
 import Modal from 'react-native-modal'
@@ -27,6 +27,12 @@ import { ScreenStackHeaderBackButtonImage } from 'react-native-screens'
 import { FontAwesome } from '@expo/vector-icons';
 import { LinearGradient } from "expo-linear-gradient";
 import {Formik} from 'formik'
+import Spinner from 'react-native-loading-spinner-overlay';
+
+import YoutubePlayer from "react-native-youtube-iframe";
+import { useFocusEffect } from '@react-navigation/native'
+
+
 
 
 
@@ -52,6 +58,12 @@ const Details=(props)=>{
 
     const [shareClicked,setShareClicked]=useState(false)
 
+    const [spin,setSpin]=useState(false)
+
+    const [trailer,setTrailer]=useState(false)
+
+    const [trailerId, setTrailerId]=useState()
+
     
     
     const genretype=[]
@@ -60,6 +72,8 @@ const Details=(props)=>{
       var poster=props.navigation.getParam('poster_path');
 
       var backdrop=props.navigation.getParam('backdrop_path')
+
+      var title=props.navigation.getParam('title')
 
       var id=props.navigation.getParam('id')
 
@@ -79,22 +93,68 @@ const Details=(props)=>{
           setLiked(true)
         }
       }
+      function backButtonHandler(){
+        setsimilar(null)
+        console.log('went back')
+        
+      }
 
-      useEffect(()=>{
-       let canceled=false
+      /*useEffect(()=>{
+           // getSimilar()
+            //getTrailer()
+            
+          BackHandler.addEventListener("hardwareBackPress", backButtonHandler);
+          return () => {
+            BackHandler.removeEventListener("hardwareBackPress", backButtonHandler);
+          };
+          
+        },[backButtonHandler])*/
+
+       
+        
+              
+        useEffect(()=>{
+          let title=props.navigation.getParam('title')
+          Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${title+' trailer'}&type=video&key=AIzaSyBdiVQhDYy29IuM3pWaZRzboNKEvKojr0w`)
+          .then((res)=>{
+            let id=res.data.items[0].id.videoId
+            console.log(res.data.items[0])
+              setTrailerId(id)
+          })
+          getSimilar()
+        },[])
+
+        //get similar movies
+        const getSimilar=()=>{
+          let canceled=false
           Axios.get(`https://api.themoviedb.org/3/movie/${id}/similar?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=1`)
           .then((res)=>{
            if(!canceled){
             setsimilar(res.data.results)
-            
+
            }
             
           })
           return ()=> {
             canceled=true
           }
-         
-        })
+        }
+        const getTrailer=()=>{
+          let canceled=false
+          let title=props.navigation.getParam('title')
+          
+          if(!canceled){
+            Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=naruto&type=video&key=AIzaSyBRbNi_0O6YRKckuLbK4XWUKfegdDBFvjo`)
+            .then((res)=>{
+                console.log(res.data)
+            })
+          }
+          
+          return ()=>{
+            canceled=true
+          }
+        }
+
         const showReview=()=>{
          if(rate){
           return (
@@ -125,11 +185,14 @@ const Details=(props)=>{
                rating:userRating,
                title:props.navigation.getParam('title')
              }
+             setSpin(true)
                    Axios.post(`http://192.168.43.62:5000/rate`,{item})
                     .then((res)=>{
                       if(res.data=='SAVED'){
                         setRate(false)
+                        setSpin(false)
                       }
+                     
                     })
                     //console.log(rateItem)
            }}>
@@ -195,7 +258,33 @@ const Details=(props)=>{
           )
         }
       }
+      const playTrailer=()=>{
+        if(!trailer){
+          return(
+            <View>
+              <TouchableOpacity onPress={()=>{setTrailer(true)}}>
+                <LinearGradient colors={['black','black','maroon']} style={{
+                  width:150,height:50,marginHorizontal:wp('30%'),borderRadius:10
+                }}>
+                  <FontAwesome style={{textAlign:'center',marginTop:wp('3%')}} name="play" size={30} color="white" />
 
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          )
+        }
+        else {
+          return(
+            <YoutubePlayer
+            height={300}
+            play={trailer}
+            videoId={trailerId}
+            style={{marginBottom:wp('20%')}}
+            
+          />
+          )
+        }
+      }
       
 
 
@@ -212,7 +301,10 @@ const Details=(props)=>{
         
       }
 
-      
+      const showGenre=()=>{
+       
+
+      }
       
       
     return (
@@ -230,13 +322,19 @@ const Details=(props)=>{
           
             <ScrollView ref={scrollRef}
             >
-              <Button title='log' onPress={()=>{
-                console.log(props.info.favourites.includes(props.navigation.getParam('title')))
-              }} />
+                          <Spinner
+          visible={spin}
+          textContent={'Loading...'}
+          color='maroon'
+          size={'large'}
+          
+          
+        />
+             
             <Image source={{uri:link}} style={styles.image} resizeMode='stretch'/>
             <View style={{flex:1,flexDirection:'row'}}>
             <Text style={styles.title}>{props.navigation.getParam('title')}</Text>
-          
+            
             </View>
             <View style={{flex:1,flexDirection:'row'}}>
               
@@ -244,72 +342,73 @@ const Details=(props)=>{
             
             </View>
 
-           <View style={{ flex:1,flexDirection:'row',marginBottom:10,marginLeft:15}}>
+           <View style={{ flex:1,flexDirection:'row',marginBottom:wp('5%'),marginLeft:15}}>
            {
-            genrecode.map((item)=>{
-              if(item==28){
-                return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Action</Text>)
-              }
-              else if(item==12){
-                return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Adventure</Text>)
-              }
-              else if(item==16){
-                return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Animation</Text>)
-              }
-              else if(item==35){
-                return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Comedy</Text>)
-              }
-              else if(item==80){
-                return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Crime</Text>)
-              }
-              else if(item==99){
-                return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Documentary</Text>)
-              }
-              else if(item==18){
-                return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Drama</Text>)
-              }
-              else if(item==10715){
-                return(<Text style={{color:'white',fontSize:20,marginRight:10}}>family</Text>)
-              }
-              else if(item==14){
-                return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Fantasy</Text>)
-              }
-              else if(item==36){
-                return(<Text style={{color:'white',fontSize:20,marginRight:10}}>History</Text>)
-              }
-              else if(item==27){
-                return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Horror</Text>)
-              }
-              else if(item==10402){
-                return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Music</Text>)
-              }
-              else if(item==9648){
-                return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Mystery</Text>)
-              }
-              else if(item==10749){
-                return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Romance</Text>)
-              }
-              else if(item==878){
-                return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Science Fiction</Text>)
-              }
-              else if(item==10770){
-                return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Tv Movie</Text>)
-              }
-              else if(item==53){
-                return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Thriller</Text>)
-              }
-              else if(item==10752){
-                return(<Text style={{color:'white',fontSize:20,marginRight:10}}>War</Text>)
-              }
-              else if(item==37){
-                return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Western</Text>)
-              }
-              
-            })
-            }
+                genrecode.map((item)=>{
+                  if(item==28){
+                    return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Action</Text>)
+                  }
+                  else if(item==12){
+                    return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Adventure</Text>)
+                  }
+                  else if(item==16){
+                    return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Animation</Text>)
+                  }
+                  else if(item==35){
+                    return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Comedy</Text>)
+                  }
+                  else if(item==80){
+                    return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Crime</Text>)
+                  }
+                  else if(item==99){
+                    return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Documentary</Text>)
+                  }
+                  else if(item==18){
+                    return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Drama</Text>)
+                  }
+                  else if(item==10715){
+                    return(<Text style={{color:'white',fontSize:20,marginRight:10}}>family</Text>)
+                  }
+                  else if(item==14){
+                    return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Fantasy</Text>)
+                  }
+                  else if(item==36){
+                    return(<Text style={{color:'white',fontSize:20,marginRight:10}}>History</Text>)
+                  }
+                  else if(item==27){
+                    return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Horror</Text>)
+                  }
+                  else if(item==10402){
+                    return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Music</Text>)
+                  }
+                  else if(item==9648){
+                    return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Mystery</Text>)
+                  }
+                  else if(item==10749){
+                    return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Romance</Text>)
+                  }
+                  else if(item==878){
+                    return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Science Fiction</Text>)
+                  }
+                  else if(item==10770){
+                    return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Tv Movie</Text>)
+                  }
+                  else if(item==53){
+                    return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Thriller</Text>)
+                  }
+                  else if(item==10752){
+                    return(<Text style={{color:'white',fontSize:20,marginRight:10}}>War</Text>)
+                  }
+                  else if(item==37){
+                    return(<Text style={{color:'white',fontSize:20,marginRight:10}}>Western</Text>)
+                  }
+                  
+                })   }
            </View>
+            {playTrailer()}
 
-              <View style={styles.infocontainer}>
+             <View >
+             <View style={styles.infocontainer}>
               
               <Text style={styles.date}>{props.navigation.getParam('release_date')}</Text>
               <MaterialIcons name='star' size={30} style={styles.icon}/>
@@ -321,7 +420,7 @@ const Details=(props)=>{
             <Overview  overview={props.navigation.getParam('overview')} toggle={visible.overview} />
             <View style={{flex:1,flexDirection:'row'}}>
             {showReview()}
-            <TouchableOpacity style={{marginLeft:wp('59%')}}>
+            <TouchableOpacity onPress={()=>{props.navigation.navigate('Recommend',{title:title,type:'movie'})}} style={{marginLeft:wp('59%')}}>
             <FontAwesome name="share" size={45} color="maroon" />
             </TouchableOpacity>
             </View>
@@ -331,12 +430,13 @@ const Details=(props)=>{
                      
             <View style={styles.line}></View>
            
+             </View>
             </ScrollView>
           
             <RefreshControl
             refreshing={refresh} />
 
-          <Text style={{color:'white'}}>{props.navigation.getParam('id')}</Text>
+         
           
           {/*<Image source={{uri:link}} style={{width:400,height:400}} resizeMode={"contain"}/>*/}
           <View>
@@ -346,7 +446,7 @@ const Details=(props)=>{
            horizontal={true}
            keyExtractor={(key)=>{key.id}}
            renderItem={({item})=>(
-            <TouchableOpacity onPress={()=>{props.navigation.navigate('Details', item),setrefresh(true)}}>
+            <TouchableOpacity onPress={()=>{props.navigation.push('Details', item),setrefresh(true)}}>
             <Card poster={item.poster_path} title={item.title} date={item.release_date} refresh={refresh}>
 
             </Card>
@@ -440,10 +540,10 @@ const styles=StyleSheet.create({
       flex:1,
       //marginBottom:30,
       width:wp('90%'),
-      height:250,
+      height:wp('90%'),
       //marginLeft:20,
       marginHorizontal:wp('5%'),
-      marginTop:20,
+      marginTop:wp('2%'),
       justifyContent:'center',
       alignContent:"center",
 
@@ -478,7 +578,7 @@ infocontainer:{
   flexDirection:'row',
   marginBottom:20,
   marginHorizontal:wp('3%'),
-  marginTop:20,
+  marginTop:wp('10%'),
 }
 
 })

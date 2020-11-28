@@ -13,12 +13,15 @@ import {Ionicons} from '@expo/vector-icons'
 import { render } from 'react-dom'
 import {connect} from 'react-redux'
 import AwesomeAlert from 'react-native-awesome-alerts';
+import Spinner from 'react-native-loading-spinner-overlay';
+
 
 
 const LogIn=(props)=>{
     const [main,setmain]=useState()
     const [secure,setSecure]=useState(true)
     const [alert,setAlert]=useState(false)
+    const [spin,setSpin]=useState(false)
 
     const showEye=()=>{
         if(!secure){
@@ -57,6 +60,15 @@ const LogIn=(props)=>{
 
     return(
         <View style={{backgroundColor:'black',height:800}}>
+                        <Spinner
+          visible={spin}
+          textContent={'Loading...'}
+          color='white'
+          size={'large'}
+          textStyle={{color:'white'}}
+          
+          
+        />
             <LinearGradient  colors={["maroon", "maroon", "purple"]}
         style={{width:300,height:600,backgroundColor:'maroon',marginHorizontal:wp('8'),
         borderRadius:10,marginTop:wp('30%'),}}>
@@ -65,16 +77,20 @@ const LogIn=(props)=>{
                     username:values.username,
                     password:values.password,
                 }
+                setSpin(true)
                    Axios.post(`http://192.168.43.62:5000/log_in`,{user})
                    .then((res)=>{
                     if(res.data.status=='LOG IN'){
                         props.logIn(res.data)
                         console.log(props.userInfo)
-                        props.navigation.navigate('Movies',{screen:'home'})
+                        setSpin(false)
+                        props.navigation.replace('Home')
+
 
                     }
                     else if(res.data.status=='WRONG DETAILS'){
                        setAlert(true)
+                       setSpin(false)
                     }
                        
                    })
@@ -145,7 +161,7 @@ const LogIn=(props)=>{
                             </LinearGradient>
 
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={()=>{props.navigation.reset()}}>
+                        <TouchableOpacity onPress={()=>{props.navigation.replace('Register')}}>
                         <Text style={{color:'white',fontSize:15,textAlign:'center',marginTop:wp('5%')}}>register</Text>
                         </TouchableOpacity>
                         

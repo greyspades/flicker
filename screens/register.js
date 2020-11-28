@@ -1,6 +1,6 @@
 import React, {useCallback,useEffect,useState, Component } from 'react'
 import Card from '../shared/card'
-import { Text, View,StyleSheet,TouchableOpacity,InteractionManager,ActivityIndicator, Button,TextInput, SegmentedControlIOSBase } from 'react-native'
+import { Text, View,StyleSheet,TouchableOpacity,InteractionManager,Alert, Button,TextInput, SegmentedControlIOSBase } from 'react-native'
 import Axios from 'axios'
 import {Formik} from 'formik'
 import {widthPercentageToDP as wp,heightPercentageTODP as hp} from 'react-native-responsive-screen'
@@ -13,6 +13,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { Navigation } from 'react-native-navigation'
 import {connect} from 'react-redux'
 import Success from './success'
+import Spinner from 'react-native-loading-spinner-overlay';
 
 
 
@@ -23,6 +24,7 @@ const Registration
     const [secure,setSecure]=useState(true)
     const [icon,setIcon]=useState('ios-eye-off')
     const [genre,setGenre]=useState([])
+    const [spin,setSpin]=useState(false)
 
     /*useEffect(()=>{
 
@@ -79,16 +81,40 @@ const Registration
     const registerUser=()=>{
 
     }
+    const showAlert = () =>
+    Alert.alert(
+      "Recomended",
+      "My Alert Msg",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "OK", onPress: () => console.log("OK Pressed") }
+      ],
+      { cancelable: false }
+    );
    
     let controler
     return (
         <View style={{justifyContent:'center',backgroundColor:'black',height:800}}>
-           
+
+                             <Spinner
+          visible={spin}
+          textContent={'Loading...'}
+          color='white'
+          size={'large'}
+          textStyle={{color:'white'}}
+          
+          
+        />
             <LinearGradient
         colors={["maroon", "maroon", "purple"]}
         style={{width:300,height:600,backgroundColor:'maroon',marginHorizontal:wp('8'),
         borderRadius:10,marginTop:wp('-25%'),}}
       >
+                                  <AntDesign style={{marginBottom:40,marginLeft:wp('5%')}} name='close' size={40} color='white' onPress={()=>{props.navigation.push('Home')}}/>
         <Formik initialValues={{username:'',mail:'',password:'',genre:[]}}  onSubmit={(values,event)=>{
                     let user={
                         username:values.username,
@@ -96,11 +122,18 @@ const Registration
                         password:values.password,
                         genres:genre
                     }
+                    setSpin(true)
                 Axios.post(`http://192.168.43.62:5000/add_user`,{user})
                 .then((res)=>{
                    if(res.data=='SAVED'){
-                        props.navigation.navigate('success')
+                      
+                        props.navigation.replace('success',{name:values.username})
+                        setSpin(false)
 
+                    }
+                    else if(res.data=='THAT USERNAME IS TAKEN'){
+                        setSpin(false)
+                        showAlert()
                     }
                     
                 })

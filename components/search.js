@@ -7,6 +7,8 @@ import Axios from 'axios';
 import Card from '../shared/card'
 import renderitem from './renderitem';
 import {widthPercentageToDP as wp,heightPercentageTODP as hp} from 'react-native-responsive-screen'
+import { LinearGradient } from "expo-linear-gradient";
+import { color } from 'react-native-reanimated';
 
 
 const Searchbar=(props)=>{
@@ -23,9 +25,14 @@ const Searchbar=(props)=>{
             //console.log(res.data.results)
         })
     }
+    function close(){
+        //setsearched(null)
+        props.method()
+        
+    }
     function enterDetails(item){
+        props.method()
         props.navigation.navigate('Details',item)
-        props.method
     }
     /*if(props.clear==true){
         setsearched(null)
@@ -35,14 +42,17 @@ const Searchbar=(props)=>{
                  <View>
                  <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={styles.modal}>
-            <Formik initialValues={{movie:''}} onSubmit={(values)=>{
+                    <LinearGradient   colors={["black", "black", "black",'maroon']}
+            style={{width:wp('100%'),height:wp('100%'),backgroundColor:'maroon',marginHorizontal:wp('0%'),
+            borderBottomRightRadius:10,borderBottomLeftRadius:10,marginTop:wp('0%'),justifyContent:'center'}}>
+                <Formik initialValues={{movie:''}} onSubmit={(values)=>{
                 searchMovie(values.movie)
                 setLoading(true)
                 
     }}>
     {({handleChange,handleBlur,handleSubmit,values})=>(
         <View>
-            <AntDesign name='close' size={40} color='white' onPress={props.method} onPressOut={()=>{setsearched(null)}}/>
+            <AntDesign name='close' size={40} color='white' onPress={()=>{close()}} onPressOut={()=>{setsearched(null)}}/>
             <TextInput style={styles.form}
             placeholder='Movie Title'
             onChangeText={handleChange('movie')} value={values.movie}/>
@@ -58,13 +68,23 @@ const Searchbar=(props)=>{
             horizontal={true}
             keyExtractor={(item)=>{item.id}}
             renderItem={({item})=>(
-                <TouchableOpacity onPress={()=>{enterDetails(item); props.method}} onPressOut={props.method} >
+                <TouchableOpacity onPress={()=>{enterDetails(item)}} >
                 <Card title={item.title} poster={item.poster_path} date={item.release_date} >
 
                 </Card>
               </TouchableOpacity>
             )}
-            ListEmptyComponent={()=>(<ActivityIndicator size='large' animating={loading} style={{marginLeft:150,marginBottom:20,color:'maroon'}} />)} />
+            ListEmptyComponent={()=>(<ActivityIndicator size='large' color='white' animating={loading} style={{marginLeft:150,marginBottom:20,color:'maroon'}} />)} />
+         
+          
+
+            </LinearGradient>
+            
+            
+            
+            
+            
+            
           </View> 
         </TouchableWithoutFeedback>
           
@@ -77,7 +97,7 @@ const styles=StyleSheet.create({
     form:{
         width:250,
         height:40,
-        backgroundColor:'white',
+        backgroundColor:'black',
         marginLeft:wp('10%'),
         marginTop:20,
         borderTopLeftRadius:10,
@@ -85,6 +105,9 @@ const styles=StyleSheet.create({
         borderColor:'maroon',
         borderWidth:5,
         textAlign:'center',
+        marginTop:wp('2%'),
+        color:'white'
+        
 
 
     },

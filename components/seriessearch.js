@@ -7,6 +7,7 @@ import Axios from 'axios';
 import SeriesCard from '../shared/seriescards'
 import renderitem from './renderitem';
 import {widthPercentageToDP as wp,heightPercentageTODP as hp} from 'react-native-responsive-screen'
+import { LinearGradient } from "expo-linear-gradient";
 
 
 const seriesSearchbar=(props)=>{
@@ -24,7 +25,7 @@ const seriesSearchbar=(props)=>{
     }
     function enterDetails(item){
         props.navigation.navigate('SeriesDetails',item)
-        props.method
+        props.method()
     }
     /*if(props.clear==true){
         setsearched(null)
@@ -32,8 +33,10 @@ const seriesSearchbar=(props)=>{
     return(
                 <Modal  visible={props.toggleSearch} transparent={true}>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={styles.modal}>
-            <Formik initialValues={{movie:''}} onSubmit={(values)=>{
+                    <LinearGradient   colors={["black", "black", "black",'maroon']}
+            style={{width:wp('100%'),height:wp('100%'),backgroundColor:'maroon',marginHorizontal:wp('0%'),
+            borderBottomRightRadius:10,borderBottomLeftRadius:10,marginTop:wp('0%'),justifyContent:'center'}}>
+                            <Formik initialValues={{movie:''}} onSubmit={(values)=>{
                 searchMovie(values.movie)
                 setLoading(true)
                 
@@ -42,7 +45,7 @@ const seriesSearchbar=(props)=>{
         <View>
             <AntDesign name='close' size={40} color='white' onPress={props.method} onPressOut={()=>{setsearched(null)}}/>
             <TextInput style={styles.form}
-            placeholder='Movie Title'
+            placeholder='Title'
             onChangeText={handleChange('movie')} value={values.movie}/>
             <MaterialIcons name='search' size={40} onPress={handleSubmit} style={{color:'white',marginLeft:wp('80%'),marginTop:-40,backgroundColor:'maroon',borderBottomRightRadius:5,borderTopRightRadius:5,width:40}} />
         </View>
@@ -56,14 +59,14 @@ const seriesSearchbar=(props)=>{
             horizontal={true}
             keyExtractor={(item)=>{item.id}}
             renderItem={({item})=>(
-                <TouchableOpacity onPress={()=>{enterDetails(item)}} onPressOut={props.method} >
+                <TouchableOpacity onPress={()=>{enterDetails(item)}}  >
                 <SeriesCard title={item.name} poster={item.poster_path} date={item.first_air_date} >
 
                 </SeriesCard>
               </TouchableOpacity>
             )}
             ListEmptyComponent={()=>(<ActivityIndicator size='large' animating={loading} style={{marginLeft:150,marginBottom:20,color:'maroon'}} />)} />
-          </View> 
+            </LinearGradient>
         </TouchableWithoutFeedback>
           
         </Modal>
@@ -73,14 +76,15 @@ const styles=StyleSheet.create({
     form:{
         width:250,
         height:40,
-        backgroundColor:'white',
+        backgroundColor:'black',
         marginLeft:wp('10%'),
-        marginTop:20,
+        marginTop:wp('1%'),
         borderTopLeftRadius:10,
         borderBottomLeftRadius:10,
         borderColor:'maroon',
         borderWidth:5,
         textAlign:'center',
+        color:'white'
 
 
 
