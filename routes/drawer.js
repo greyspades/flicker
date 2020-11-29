@@ -19,12 +19,7 @@ const Drawer=createDrawerNavigator({
     'Tv series' :{
         screen:SeriesStack,
     },
-    'Log in':{
-        screen:regStack
-    },
-    Reg:{
-        screen:Registration
-    },
+  
     profile:{
         screen:Profile
     }

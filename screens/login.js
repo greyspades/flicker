@@ -1,6 +1,6 @@
 import React, {useCallback,useEffect,useState, Component } from 'react'
 import Card from '../shared/card'
-import { Text, View,StyleSheet,TouchableOpacity,InteractionManager,ActivityIndicator,TextInput } from 'react-native'
+import { AsyncStorage,Text, View,StyleSheet,TouchableOpacity,InteractionManager,ActivityIndicator,TextInput, Button } from 'react-native'
 import Details from '../screens/details'
 import {AfterInteractions} from 'react-native-interactions'
 import {StackActions, NavigationActions} from 'react-navigation'
@@ -23,6 +23,55 @@ const LogIn=(props)=>{
     const [alert,setAlert]=useState(false)
     const [spin,setSpin]=useState(false)
 
+    useEffect(()=>{
+       //getData()
+    },[])
+    
+   const getData=async()=>{
+    try {
+        const userAge = await AsyncStorage.getItem("key")
+        let info=JSON.parse(userAge)
+       let user={
+           username:info.name,
+           password:info.password
+       }
+        if (userAge !== null) {
+            
+            Axios.post(`https://flickmeet-1.herokuapp.com/log_in`,{user})
+            .then( async (res)=>{
+                await props.logIn(res.data)
+                 props.navigation.navigate('Home')
+            })
+            
+            
+        }
+        
+      } catch (e) {
+        console.log(e)
+      }
+   }
+   const log=()=>{
+    props.navigation.navigate('Home')
+   }
+    const storeData=async(name,password)=>{
+       
+      
+        let thing={
+            name:name,
+            password:password,
+        }
+        let payload=JSON.stringify(thing)
+        try {
+            await AsyncStorage.setItem(
+              "key",
+              payload
+            );
+            console.log('saved')
+          } catch (error) {
+            // Error saving data
+            
+          }
+    }
     const showEye=()=>{
         if(!secure){
             return (
@@ -57,9 +106,12 @@ const LogIn=(props)=>{
         setAlert(true)
     }
     
-
+    const enter=()=>{
+        
+    }
+    
     return(
-        <View style={{backgroundColor:'black',height:800}}>
+        <View style={{backgroundColor:'black',height:800,flex:1,alignItems:'center'}}>
                         <Spinner
           visible={spin}
           textContent={'Loading...'}
@@ -70,8 +122,9 @@ const LogIn=(props)=>{
           
         />
             <LinearGradient  colors={["maroon", "maroon", "purple"]}
-        style={{width:300,height:600,backgroundColor:'maroon',marginHorizontal:wp('8'),
-        borderRadius:10,marginTop:wp('30%'),}}>
+        style={{width:300,height:600,backgroundColor:'maroon',flex:1,alignItems:'center',
+        borderRadius:10,marginTop:wp('15%'),}}>
+
             <Formik initialValues={{username:'',password:''}} onSubmit={(values)=>{
                 let user={
                     username:values.username.toLowerCase(),
@@ -82,7 +135,9 @@ const LogIn=(props)=>{
                    .then((res)=>{
                     if(res.data.status=='LOG IN'){
                         props.logIn(res.data)
-                        console.log(props.userInfo)
+                        storeData(res.data.info.username,res.data.info.password)
+                        //localStorage.setItem("persist", JSON.stringify(res.data));
+                        //console.log(res.data)
                         setSpin(false)
                         props.navigation.replace('Home')
 
@@ -97,7 +152,7 @@ const LogIn=(props)=>{
             }}>
                 {({handleChange,handleBlur,handleSubmit,values})=>(
                     (
-                        <View>
+                        <View style={{flex:1,alignItems:'center'}}>
                             <AwesomeAlert
           show={alert}
           showProgress={false}
@@ -118,7 +173,7 @@ const LogIn=(props)=>{
           }}
         />
                             <Text style={{color:'white',fontSize:30,textAlign:'center'}}>Log in</Text>
-                        <TextInput style={{width:250,height:30,marginHorizontal:wp('7%'),
+                        <TextInput style={{width:250,height:30,
                         color:'white',fontSize:20,marginTop:wp('10%')
 
                         }}
@@ -131,7 +186,7 @@ const LogIn=(props)=>{
                         allowFontScaling={true}/>
                           <View style={{width:250,height:5,backgroundColor:'white',marginHorizontal:wp('7%'),
                     opacity:0.5,borderRadius:2}}></View>
-                         <TextInput style={{width:200,height:30,marginHorizontal:wp('14%'),
+                         <TextInput style={{width:200,height:30,
                         color:'black',fontSize:20,marginTop:wp('15%'),backgroundColor:'white'
                         ,borderRadius:10
                         }}
@@ -148,7 +203,7 @@ const LogIn=(props)=>{
                         <TouchableOpacity onPress={handleSubmit}>
                             <LinearGradient
                             colors={["purple",'black']}
-                            style={{width:80,height:40,backgroundColor:'maroon',marginHorizontal:wp('30%'),
+                            style={{width:80,height:40,backgroundColor:'maroon',
                             borderRadius:10,marginTop:wp('2%'),shadowColor: '#000',
                             shadowOffset: { width: 0, height: 1 },
                             shadowOpacity: 0.8,
@@ -179,14 +234,14 @@ const LogIn=(props)=>{
 }
 const mapState=(state)=>{
     return {
-        loggedIn:state.logedIn,
+        logedIn:state.isLogedIn,
         userInfo:state.userInfo
     }
 }
 const mapDispatch=(dispatch)=>{
     return {
         logIn:(user)=>{dispatch({type:'LOG IN',user:user})},
-        //setUser:(user)=>{dispatch({type:'SSET USER',})}
+        setUser:(item)=>{dispatch({type:'SET USER',user:item})}
     }
 }
 export default connect(mapState,mapDispatch) (LogIn)

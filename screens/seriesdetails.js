@@ -187,7 +187,7 @@ const SeriesDetails=(props)=>{
       if(liked||props.info.favourites.includes(title)){
         return (
           <TouchableOpacity onPress={()=>{
-            Axios.get(`http://192.168.43.62:5000/remove_from_fav/${props.navigation.getParam('name')}/${props.info.username}`)
+            Axios.get(`https://flickmeet-1.herokuapp.com/remove_from_fav/${props.navigation.getParam('name')}/${props.info.username}`)
             .then((res)=>{
               
             })
@@ -215,7 +215,7 @@ const SeriesDetails=(props)=>{
         username:props.info.username,
         title:props.navigation.getParam('name')
       }
-      Axios.post(`http://192.168.43.62:5000/add_to_favourites`,{fav})
+      Axios.post(`https://flickmeet-1.herokuapp.com/add_to_favourites`,{fav})
       .then((res)=>{
         console.log(res.data)
         setLiked(true)

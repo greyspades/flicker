@@ -69,7 +69,7 @@ const movieReducer=(state=initialState,action)=>{
     else if(action.type=='LOG IN'){
         return {
             ...state,
-            isLogedIn:action.user.status,
+            isLogedIn:true,
             userInfo:action.user.info,
         }
     }
@@ -77,6 +77,13 @@ const movieReducer=(state=initialState,action)=>{
         return {
             ...state,
             favourites:action.item
+        }
+    }
+    else if(action.type=='SET USER'){
+        return {
+            ...state,
+            isLogedIn:true,
+            userInfo:action.user,
         }
     }
    

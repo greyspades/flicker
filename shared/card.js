@@ -36,7 +36,8 @@ const Card =(props)=>{
     
     
     return(
-        <View style={styles.back}>
+        <View style={{flex:1,alignItems:'center'}}>
+                    <View style={styles.back}>
              <View style={styles.card}>
             <ImageBackground source={{uri:`https://image.tmdb.org/t/p/w500${path}`}}  style={styles.background}>
             {props.children}
@@ -47,6 +48,7 @@ const Card =(props)=>{
 
         
         </View>
+        </View>
       
     );
 }
@@ -55,7 +57,7 @@ const styles=StyleSheet.create({
     card:{
         borderRadius:6,
         elevation:3,
-        backgroundColor:'white',
+        backgroundColor:'grey',
         shadowOffset: {width:1,height:1},
         shadowColor:'#333',
         shadowOpacity:0.3,
@@ -81,16 +83,13 @@ const styles=StyleSheet.create({
         width:100,
         height:175,
         backgroundColor:'maroon',
-        display:'flex',
-        borderBottomLeftRadius:10,
-        borderBottomRightRadius:10,
+        borderBottomLeftRadius:7,
+        borderBottomRightRadius:7,
         //borderBottomEndRadius:20,
         //height:200,
         //flexDirection:'row'
-        marginLeft:wp('1%'),
-        alignContent:"center",
-        justifyContent:"center",
-        
+        //marginLeft:wp('3%'),
+
         
     },
     title:{

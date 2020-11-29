@@ -55,7 +55,7 @@ const Registration
         if(!secure){
             return (
                 <View>
-                     <Ionicons name={'ios-eye'} size={40} color="white" style={{marginHorizontal:wp('37%'),marginVertical:wp('5%')}}
+                     <Ionicons name={'ios-eye'} size={40} color="white" style={{marginTop:wp('5%')}}
                             onPress={()=>{if(!secure){
                                 setSecure(true)
                             }}}
@@ -66,7 +66,7 @@ const Registration
         else {
             return (
                 <View>
-                 <Ionicons name={'ios-eye-off'} size={40} color="white" style={{marginHorizontal:wp('37%'),marginVertical:wp('5%')}}
+                 <Ionicons name={'ios-eye-off'} size={40} color="white" style={{marginTop:wp('5%')}}
                 onPress={()=>{
                     if(secure){
                         setSecure(false)
@@ -98,7 +98,7 @@ const Registration
    
     let controler
     return (
-        <View style={{justifyContent:'center',backgroundColor:'black',height:800}}>
+        <View style={{justifyContent:'center',backgroundColor:'black',height:800,flex:1,alignItems:"center"}}>
 
                              <Spinner
           visible={spin}
@@ -111,10 +111,10 @@ const Registration
         />
             <LinearGradient
         colors={["maroon", "maroon", "purple"]}
-        style={{width:300,height:600,backgroundColor:'maroon',marginHorizontal:wp('8'),
-        borderRadius:10,marginTop:wp('-25%'),}}
+        style={{width:300,height:600,backgroundColor:'maroon',
+        borderRadius:10,flex:1,marginTop:wp('20%'),alignItems:'center'}}
       >
-                                  <AntDesign style={{marginBottom:40,marginLeft:wp('5%')}} name='close' size={40} color='white' onPress={()=>{props.navigation.push('Home')}}/>
+                                  <AntDesign style={{marginBottom:wp('10%')}} name='close' size={40} color='white' onPress={()=>{props.navigation.replace('Login')}}/>
         <Formik initialValues={{username:'',mail:'',password:'',genre:[]}}  onSubmit={(values,event)=>{
                     let user={
                         username:values.username.toLowerCase(),
@@ -139,10 +139,10 @@ const Registration
                 })
         }}>
                {({handleChange,handleBlur,handleSubmit,values})=>((
-                   <View>
+                   <View style={{flex:1,alignItems:'center',marginTop:wp('10%')}}>
                        
-                        <Text style={{color:'white',fontSize:25,marginHorizontal:wp('27%'),marginTop:wp('-15%')}}>Register</Text>
-                        <TextInput style={{width:250,height:30,marginHorizontal:wp('7%'),
+                        <Text style={{color:'white',fontSize:25,marginTop:wp('-15%')}}>Register</Text>
+                        <TextInput style={{width:250,height:30,
                         color:'white',fontSize:20,marginTop:wp('10%')
 
                         }}
@@ -153,9 +153,9 @@ const Registration
                         textAlign={'center'}
                         placeholder='Username'
                         allowFontScaling={true}/>
-                        <View style={{width:250,height:5,backgroundColor:'white',marginHorizontal:wp('7%'),
+                        <View style={{width:250,height:5,backgroundColor:'white',
                     opacity:0.5,borderRadius:2}}></View>
-                     <TextInput style={{width:250,height:30,marginHorizontal:wp('7%'),
+                     <TextInput style={{width:250,height:30,
                         color:'white',fontSize:20,marginTop:wp('15%')
                         
                         }}
@@ -168,8 +168,8 @@ const Registration
                         allowFontScaling={true}/>
                         <View style={{width:250,height:5,backgroundColor:'white',marginHorizontal:wp('7%'),
                     opacity:0.5,borderRadius:2}}></View>
-                    <View style={{flex:1}}>
-                    <TextInput style={{width:200,height:30,marginHorizontal:wp('14%'),
+                    <View style={{flex:1,alignItems:'center'}}>
+                    <TextInput style={{width:200,height:30,
                         color:'black',fontSize:20,marginTop:wp('15%'),backgroundColor:'white'
                         ,borderRadius:10
                         }}
@@ -183,8 +183,8 @@ const Registration
                         {showEye()}
                         
                     </View>
-                      <View style={{marginVertical:wp('40%')}}>
-                          <Text style={{color:'white',fontSize:20,marginHorizontal:wp('20%'),marginTop:wp('3%')}}>Pick your genres</Text>
+                      <View style={{flex:1,alignItems:'center',marginBottom:wp('40%')}}>
+                          <Text style={{color:'white',fontSize:20,marginTop:wp('3%')}}>Pick your genres</Text>
                      <DropDownPicker items={[
                             {label: 'Action', value: 'action'},
                             {label: 'Adventure', value: 'adventure'},
@@ -205,7 +205,7 @@ const Registration
                             
                             placeholder='select your genres'
                             defaultValue={values.genre}
-                            containerStyle={{height:30,width:250,marginHorizontal:wp('7%'),marginTop:wp('3')}}
+                            containerStyle={{height:30,width:250,marginTop:wp('3')}}
                             dropDownStyle={{backgroundColor: 'black'}}
                             itemStyle={{justifyContent: 'flex-start|flex-end|center'}}
                             itemStyle={{
@@ -229,7 +229,7 @@ const Registration
                         <TouchableOpacity onPress={handleSubmit}>
                             <LinearGradient
                             colors={["purple",'black']}
-                            style={{width:80,height:40,backgroundColor:'maroon',marginHorizontal:wp('30%'),
+                            style={{width:80,height:40,backgroundColor:'maroon',
                             borderRadius:10,marginTop:wp('10%'),shadowColor: '#000',
                             shadowOffset: { width: 0, height: 1 },
                             shadowOpacity: 0.8,

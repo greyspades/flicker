@@ -26,11 +26,13 @@ const Popular=(props)=>{
     
     useEffect(()=>{
             let isCancelled=false;
+            let item=props.navigation.getParam('item')
             Axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${props.page}`)
             .then((res)=>{
             if(!isCancelled){
                 props.setMovies(res.data.results)
                 setloaded(true)
+                props.login(item)
             
             }
             })
@@ -106,7 +108,7 @@ const Popular=(props)=>{
      const {movies}=props
     
     return(
-        <View style={{flex:1}}>
+        <View style={{flex:1,backgroundColor:'black'}}>
           
             <ActivityIndicator style={{backgroundColor:'black'}} size='large' animating={isLoading}/>
             <Spinner
@@ -148,7 +150,8 @@ const dispatchToProps=(dispatch)=>{
     return{
         setMovies:(item)=>{dispatch({type:'SET MOVIES',item:item})},
         updateMovies:(update)=>{dispatch({type:'UPDATE MOVIES',update:update})},
-        nextPage:()=>{dispatch({type:'NEXT PAGE'})}
+        nextPage:()=>{dispatch({type:'NEXT PAGE'})},
+        login:(item)=>{dispatch({type:'LOG in',user:item})}
 
     }
 }

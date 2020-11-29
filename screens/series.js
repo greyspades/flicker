@@ -82,7 +82,7 @@ const Series = (props) => {
     const ren=({ item })=>{return(<Renderitem item={item} navigation={navigation} />)}
 
     return(
-        <View>
+        <View style={{flex:1,}}>
             <ActivityIndicator style={{backgroundColor:'black'}} size='large' animating={isLoading}/>
          
 
