@@ -68,6 +68,7 @@ const styles=StyleSheet.create({
         //width:40,
         justifyContent:'flex-end',
         
+        
 
     },
     cardContent:{
@@ -85,6 +86,8 @@ const styles=StyleSheet.create({
         backgroundColor:'maroon',
         borderBottomLeftRadius:7,
         borderBottomRightRadius:7,
+        marginBottom:wp('2%')
+
         //borderBottomEndRadius:20,
         //height:200,
         //flexDirection:'row'

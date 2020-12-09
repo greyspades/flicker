@@ -14,6 +14,8 @@ import { render } from 'react-dom'
 import {connect} from 'react-redux'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {logIn} from '../redux/reducers/actions'
+import {getStorage} from '../redux/reducers/actions'
 
 
 
@@ -24,31 +26,37 @@ const LogIn=(props)=>{
     const [spin,setSpin]=useState(false)
 
     useEffect(()=>{
-       //getData()
+       getData()
+       
     },[])
     
-   const getData=async()=>{
-    try {
-        const userAge = await AsyncStorage.getItem("key")
-        let info=JSON.parse(userAge)
-       let user={
-           username:info.name,
-           password:info.password
+const getData=async(dispatch)=>{
+    const userAge = await AsyncStorage.getItem("key")
+    let info=JSON.parse(userAge)
+   let user={
+       username:info.name,
+       password:info.password
+   }
+   if(userAge != null){
+    Axios.post(`https://flickmeet-1.herokuapp.com/log_in`,{user})
+    .then( (res)=>{
+        console.log(res.data.info)
+        //console.log(user)
+        props.setUser(res.data.info)
+        props.navigation.replace('Home')
+    })
+   }
+ 
+            //props.logIn(res.data)
+                
+            //props.navigation.navigate('Home')
+              //console.log(user)
+            
+   }
+   const getUser=()=>{
+       return ()=>{
+           console.log('metro')
        }
-        if (userAge !== null) {
-            
-            Axios.post(`https://flickmeet-1.herokuapp.com/log_in`,{user})
-            .then( async (res)=>{
-                await props.logIn(res.data)
-                 props.navigation.navigate('Home')
-            })
-            
-            
-        }
-        
-      } catch (e) {
-        console.log(e)
-      }
    }
    const log=()=>{
     props.navigation.navigate('Home')
@@ -121,6 +129,7 @@ const LogIn=(props)=>{
           
           
         />
+        <Button title='check' onPress={()=>{console.log(props.userInfo)}}/>
             <LinearGradient  colors={["maroon", "maroon", "purple"]}
         style={{width:300,height:600,backgroundColor:'maroon',flex:1,alignItems:'center',
         borderRadius:10,marginTop:wp('15%'),}}>
@@ -139,7 +148,7 @@ const LogIn=(props)=>{
                         //localStorage.setItem("persist", JSON.stringify(res.data));
                         //console.log(res.data)
                         setSpin(false)
-                        props.navigation.replace('Home')
+                        props.navigation.navigate('Tab',{screen:Tab})
 
 
                     }
@@ -235,13 +244,15 @@ const LogIn=(props)=>{
 const mapState=(state)=>{
     return {
         logedIn:state.isLogedIn,
-        userInfo:state.userInfo
+        userInfo:state.userInfo,
+        storage:state.storage,
     }
 }
 const mapDispatch=(dispatch)=>{
     return {
-        logIn:(user)=>{dispatch({type:'LOG IN',user:user})},
-        setUser:(item)=>{dispatch({type:'SET USER',user:item})}
+        logIn:(user)=>{dispatch(logIn(user))},
+        setUser:(item)=>{dispatch({type:'SET USER',user:item})},
+        getStorage:(user)=>{dispatch(getStorage(user))}
     }
 }
 export default connect(mapState,mapDispatch) (LogIn)

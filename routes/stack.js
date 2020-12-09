@@ -13,6 +13,10 @@ import Video from '../components/video'
 import Login from '../screens/login'
 import Registration from '../screens/register'
 import Success from '../screens/success'
+import Tab from './tab'
+import profile from '../screens/profile'
+import UpcomingMovies from '../screens/latestmovies'
+import Genremain from '../screens/choosengenre'
 
 const screens={
 
@@ -50,19 +54,35 @@ const screens={
 },
 
     Home:{
-        screen:Popular,
+        screen:Tab,
         navigationOptions:({navigation})=>{
             return{
                 headerTitle:()=><Header navigation={navigation} />,
                 
                 headerStyle:{
-                    backgroundColor:'maroon'
+                    backgroundColor:'maroon',
+                    height:40
                 }
             }
             
             
         }
         
+    },
+    genre:{
+        screen:Genremain,
+        navigationOptions:({navigation})=>{
+            return{
+                headerTitle:()=><Header navigation={navigation} />,
+                
+                headerStyle:{
+                    backgroundColor:'maroon',
+                    height:40
+                }
+            }
+            
+            
+        }
     },
 
     Details:{

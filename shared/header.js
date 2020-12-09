@@ -176,9 +176,11 @@ const styles=StyleSheet.create({
         width:'100%',
         height:'100%',
         flexDirection:'row',
+        
         //alignItems:'center',
         //justifyContent:'center',
         //backgroundColor:'maroon',
+       
     },
     headertext:{
         fontWeight:'bold',
@@ -196,7 +198,9 @@ const styles=StyleSheet.create({
     heading:{
         justifyContent:"center",
         textAlign:"center",
-        marginLeft:wp('8%')
+        marginLeft:wp('8%'),
+
+     
 
     }
 })

@@ -6,7 +6,7 @@ import Home from './screens/home'
 import * as font from 'expo-font'
 import Drawer from './routes/drawer'
 import  Details from './screens/details'
-import {createStore} from 'redux'
+import {createStore,applyMiddleware} from 'redux'
 import {Provider} from 'react-redux'
 import movieReducer from './redux/reducers/moviereducer'
 import Homestack from './routes/stack'
@@ -17,6 +17,13 @@ import AnimatedSplash from 'react-native-animated-splash-screen'
 import Video from './components/video'
 import Registration from './screens/register'
 import Spinner from 'react-native-loading-spinner-overlay';
+import thunk from 'redux-thunk'
+import { NavigationContainer } from '@react-navigation/native';
+import {navigationRef} from './redux/navigator'
+import { PersistGate } from "redux-persist/integration/react";
+import {persistor,store} from './redux/reducers/localreducer'
+//import Tab from './routes/Tab'
+import LogIn from './screens/login'
 
 
 function App() {
@@ -32,14 +39,15 @@ function App() {
     
   })
 
-  const store=createStore(movieReducer)
+  //const mainstore=createStore(movieReducer,applyMiddleware(thunk))
   enableScreens()
  
   return (
     <View style={styles.container}>
-      <Provider  store={store}>
-
-      <AnimatedSplash
+    
+    <Provider  store={store}>
+    <PersistGate persistor={persistor} loading={null}>
+    <AnimatedSplash
           transluscent={true}
           isLoaded={main}
           backgroundColor={'black'}
@@ -47,10 +55,17 @@ function App() {
           logoHeight={'100%'}
           logoWidth={'100%'}
           >
-          <Drawer />
-          </AnimatedSplash>      
+         <NavigationContainer>
+           
+         <Drawer />
+        
+         </NavigationContainer>
+          </AnimatedSplash>
+      </PersistGate>     
+      
        
       </Provider>
+    
 
     </View> 
   );

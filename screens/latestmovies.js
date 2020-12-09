@@ -16,7 +16,7 @@ import movieReducer from '../redux/reducers/moviereducer'
 
 
 
-const Popular=(props)=>{
+const UpcomingMovies=(props)=>{
     const [popular,setpopular]=useState([])
     const [main,setmain]=useState(movies)       
  
@@ -25,11 +25,12 @@ const Popular=(props)=>{
     const [prev,setprev]=useState([])
     const [isLoading,setIsLoading]=useState(false)
     const [spinner,setSpinner]=useState(false)
+    const [page,setpage]=useState(1)
     
     useEffect(()=>{
             let isCancelled=false;
             let item=props.navigation.getParam('item')
-            Axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${props.page}`)
+            Axios.get(`https://api.themoviedb.org/3/movie/top_rated?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${page}`)
             .then((res)=>{
             if(!isCancelled){
                 props.setMovies(res.data.results)
@@ -64,14 +65,14 @@ const Popular=(props)=>{
     var next=[]
 
     const getapi=()=>{
-     Axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${props.page}`)
+     Axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${page}`)
      .then((res)=>{
         props.setMovies(res.data.results)
      })
     }
     const getrest=()=>{
-     props.nextPage()
-     Axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${props.page}`)
+     setpage(page+1)
+     Axios.get(`https://api.themoviedb.org/3/movie/top_rated?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${page}`)
      .then((res)=>{
         props.updateMovies(res.data.results)
      })
@@ -112,7 +113,7 @@ const Popular=(props)=>{
     
     return(
         <View style={{flex:1,backgroundColor:'black', }}>
-          <Button style={{marginBottom:20}} title='purge' onPress={()=>{props.clear}} />
+              <Button style={{marginBottom:20}} title='purge' onPress={()=>{props.clear}} />
             <ActivityIndicator style={{backgroundColor:'black'}} size='large' animating={isLoading}/>
             <Spinner
           visible={false}
@@ -122,6 +123,7 @@ const Popular=(props)=>{
           
           
         />
+    
             <FlatGrid
              
              itemDimension={100}
@@ -146,17 +148,18 @@ const Popular=(props)=>{
 
 const mapToProps=(state)=>{
     return {
-        movies:state.movies,
+        movies:state.upcomingMovies,
         page:state.page
     }
 }
 const dispatchToProps=(dispatch)=>{
     return{
-        setMovies:(item)=>{dispatch({type:'SET MOVIES',item:item})},
-        updateMovies:(update)=>{dispatch({type:'UPDATE MOVIES',update:update})},
+        setMovies:(item)=>{dispatch({type:'SET UCM',item:item})},
+        updateMovies:(update)=>{dispatch({type:'UPDATE UCM',item:update})},
         nextPage:()=>{dispatch({type:'NEXT PAGE'})},
         login:(item)=>{dispatch({type:'LOG in',user:item})},
-        clear:()=>{dispatch({type:'CLEAR MOVIES',})},
+        clear:()=>{dispatch({type:'CLEAR MOVIES',})}
+
     }
 }
 const styles=StyleSheet.create({
@@ -170,4 +173,4 @@ const styles=StyleSheet.create({
     },
 })
 
-export default connect(mapToProps,dispatchToProps)(Popular)
+export default connect(mapToProps,dispatchToProps)(UpcomingMovies)

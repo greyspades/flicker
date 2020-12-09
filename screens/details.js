@@ -121,6 +121,7 @@ const Details=(props)=>{
             console.log(res.data.items[0])
               setTrailerId(id)
           })
+          console.log(id)
           getSimilar()
         },[])
 

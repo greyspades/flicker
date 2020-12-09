@@ -4,6 +4,8 @@ import { ScaleAnimation } from "react-native-modals"
 
 const initialState={
     movies:[],
+    upcomingMovies:[],
+    nextUCM:[],
     series:[],
     page:1,
     update:[],
@@ -13,6 +15,9 @@ const initialState={
     isLogedIn:false,
     userInfo:{},
     favourites:[],
+    storage:{},
+    genres:[],
+    nextgenre:[]
 
 }
 
@@ -86,8 +91,49 @@ const movieReducer=(state=initialState,action)=>{
             userInfo:action.user,
         }
     }
-   
-    
+    else if(action.type=='GET STORAGE') {
+        return {
+            ...state,
+            storage:action.user
+        }
+    }
+    else if(action.type=='GET UPCOMING'){
+        return {
+            ...state,
+            //upcomingMovies:[...]
+        }
+    }
+    else if(action.type=='CLEAR MOVIES') {
+        return {
+            ...state,
+            movies:null,
+            update:null
+        }
+    }
+    else if(action.type=='SET UCM'){
+        return {
+            ...state,
+            upcomingMovies:[...state.nextUCM,...action.item]
+        }
+    }
+    else if(action.type=='UPDATE UCM'){
+        return {
+            ...state,
+            nextUCM:[...state.upcomingMovies,action.item.shift()]
+        }
+    }
+    else if(action.type=='SET GENRES'){
+        return {
+            ...state,
+            genres:[...state.nextgenre,...action.item]
+        }
+    }
+    else if(action.type=='UPDATE GENRES'){
+        return {
+            ...state,
+            nextgenre:[...state.genres,action.item.shift()]
+        }
+    }
     return state;
 }
 
