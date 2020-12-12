@@ -8,20 +8,13 @@ import Renderitem from '../components/renderitem'
 import SeriesCard from '../shared/seriescards'
 import {connect} from 'react-redux'
 import {widthPercentageToDP as wp,heightPercentageTODP as hp} from 'react-native-responsive-screen'
+import { mdiPageNext } from '@mdi/js'
 
 
 const Series = (props) => {
-    /*const [main,setmain]=useState([])
-    
-    const getSeries=()=>{
-        Axios.get(`https://api.themoviedb.org/3/tv/popular?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${page}`)
-    }
-    return (
-        <div>
-            
-        </div>
-    )*/
+   const [main, setmain]=useState([])
     const [popular,setpopular]=useState([])
+    const [next,setnext]=useState([])
        
  
     const [page,setpage]=useState(1)
@@ -34,7 +27,8 @@ const Series = (props) => {
        Axios.get(`https://api.themoviedb.org/3/tv/popular?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${page}`)
        .then((res)=>{
         if(!isCancelled){
-            props.setSeries(res.data.results)
+            //props.setSeries(res.data.results)
+            setmain([...next,...res.data.results])
         }
     })
     return ()=>{
@@ -53,7 +47,8 @@ const Series = (props) => {
         setpage(page+1)
         Axios.get(`https://api.themoviedb.org/3/tv/popular?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${page}`)
      .then((res)=>{
-        props.updateSeries(res.data.results)
+        //props.updateSeries(res.data.results)
+        setnext([...main,res.data.results.slice()])
      })
     }
 
@@ -90,7 +85,7 @@ const Series = (props) => {
             
              itemDimension={100}
              spacing={10}
-             data={props.series}
+             data={main}
              style={styles.grid}
              renderItem={renderItem}  
              initialNumToRender={10}
@@ -121,7 +116,8 @@ const styles=StyleSheet.create({
     grid:{ 
         //marginTop:20,
         backgroundColor:'black',
-
+        marginTop:wp('-10%')
+       
         
     },
 })

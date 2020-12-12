@@ -8,19 +8,21 @@ import SeriesHeader from '../components/seriesheader'
 import Trending from '../screens/trending'
 import Series from '../screens/series'
 import Recommend from '../screens/recommend'
+import SeriesTab from './seriestab'
 
 
 
 const screens={
 
     Home:{
-        screen:Series,
+        screen:SeriesTab,
         navigationOptions:({navigation})=>{
             return{
                 headerTitle:()=><SeriesHeader navigation={navigation} />,
                
                 headerStyle:{
-                    backgroundColor:'maroon'
+                    backgroundColor:'maroon',
+                    height:40
                 }
             }
             

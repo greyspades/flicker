@@ -115,7 +115,7 @@ const Genremain=(props)=>{
     
     return(
         <View style={{flex:1,backgroundColor:'black', }}>
-              <Button style={{marginBottom:20}} title='purge' onPress={()=>{props.clear}} />
+             <View><Text style={{color:'white',fontSize:25,textAlign:'center'}}>{genre.name}</Text></View>
             <ActivityIndicator style={{backgroundColor:'black'}} size='large' animating={isLoading}/>
             <Spinner
           visible={false}

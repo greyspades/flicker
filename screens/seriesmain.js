@@ -12,33 +12,32 @@ import {widthPercentageToDP as wp,heightPercentageTODP as hp} from 'react-native
 import Spinner from 'react-native-loading-spinner-overlay';
 import {persistStore,persistReducer} from 'redux-persist'
 import movieReducer from '../redux/reducers/moviereducer'
-import {Picker} from '@react-native-picker/picker'
-import DropDownPicker from 'react-native-dropdown-picker';
+import SeriesCard from '../shared/seriescards'
 //import MyTab from '../routes/tab'
 
 
 
-const Popular=(props)=>{
+const SeriesMain=(props)=>{
     const [popular,setpopular]=useState([])
     const [main,setmain]=useState([])       
  
-    const [page,setpage]=useState(1)
+    //const [page,setpage]=useState(1)
     const [loaded,setloaded]=useState(false)
     const [prev,setprev]=useState([])
     const [isLoading,setIsLoading]=useState(false)
     const [spinner,setSpinner]=useState(false)
-    const [year,setyear]=useState(null)
+    const [page,setpage]=useState(1)
     
     useEffect(()=>{
             let isCancelled=false;
             let item=props.navigation.getParam('item')
-            Axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${page}&primary_release_year=${year}`)
+            Axios.get(`https://api.themoviedb.org/3/discover/tv?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${page}&with_genres=${genre.id}`)
             .then((res)=>{
             if(!isCancelled){
-                //props.setMovies(res.data.results)
-                setmain([...prev,...res.data.results])
+                //props.setGenre(res.data.results)
                 setloaded(true)
-                props.login(item)
+                setmain([...prev,...res.data.results])
+                
             
             }
             })
@@ -66,19 +65,18 @@ const Popular=(props)=>{
     
     var pop=popular
     var next=[]
-
+    var genre=props.navigation.getParam('item')
     const getapi=()=>{
-     Axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${props.page}`)
+     Axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${page}`)
      .then((res)=>{
         props.setMovies(res.data.results)
      })
     }
     const getrest=()=>{
-     //props.nextPage()
      setpage(page+1)
-     Axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${page}&primary_release_year=${year}`)
+     Axios.get(`https://api.themoviedb.org/3/discover/tv?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${page}&with_genres=${genre.id}`)
      .then((res)=>{
-        //props.updateMovies(res.data.results)
+        //props.update(res.data.results)
         setprev([...main,res.data.results.shift()])
      })
     }
@@ -97,10 +95,10 @@ const Popular=(props)=>{
     
     const renderItem=({ item })=>{
         return(
-            <TouchableOpacity onPress={()=>props.navigation.navigate('Details',item)}>
-            <Card poster={item.poster_path} title={item.title} date={item.release_date}>
+            <TouchableOpacity onPress={()=>props.navigation.navigate('SeriesDetails',item)}>
+                <SeriesCard poster={item.poster_path} title={item.name} date={item.first_air_date}>
 
-            </Card>
+                </SeriesCard>
 
             </TouchableOpacity>  
         )
@@ -115,54 +113,10 @@ const Popular=(props)=>{
     //const navigate=useCallback(({item})=>{navigation.navigate('Details',item)},[item])
     const ren=({ item })=>{return(<Renderitem item={item} navigation={props.navigation} />)}
      const {movies}=props
-    var today=new Date()
-    var the_year=today.getFullYear().toString()
+    
     return(
         <View style={{flex:1,backgroundColor:'black', }}>
-           <View >
-           <DropDownPicker items={[
-                            {label: the_year, value: the_year},
-                            {label: 'adventure', value: 'adventure'},
-                            {label: 'Comedy', value: 'comedy'},
-                            {label: 'Drama', value: 'drama'},
-                            {label: 'Fantasy', value: 'fantasy'},
-                            {label: 'Horror', value: 'horror'},
-                            {label: 'Romance', value: 'romance'},
-                            {label: 'Science fiction', value: 'science fiction'},
-                            {label: 'Thriller', value: 'thriller'},
-                          ]} 
-                            multiple={true}
-                            value={year}
-                            onChangeItem={(item)=>{
-                                setyear(item)
-                                
-                            }}
-                            
-                            placeholder='Year'
-                            defaultValue={'genie'}
-                            containerStyle={{height:30,width:100,marginVertical:wp('2'),marginLeft:wp('68%')}}
-                            dropDownStyle={{backgroundColor: 'white'}}
-                            itemStyle={{justifyContent: 'flex-start|flex-end|center'}}
-                            itemStyle={{
-                                justifyContent: 'flex-start', 
-                            }}
-                            labelStyle={{
-                                fontSize: 14,
-                                textAlign: 'left',
-                                color: 'black'
-                            }}
-                            selectedtLabelStyle={{
-                                color: 'maroon'
-                            }}
-                            placeholderStyle={{
-                                fontWeight: 'bold',
-                                textAlign: 'center',
-                                color:'blue',
-                                backgroundColor:'blue'
-                            }}
-                            activeLabelStyle={{color: 'maroon'}}
-                        />
-           </View>
+             <View><Text style={{color:'white',fontSize:25,textAlign:'center'}}>{genre.name}</Text></View>
             <ActivityIndicator style={{backgroundColor:'black'}} size='large' animating={isLoading}/>
             <Spinner
           visible={false}
@@ -172,13 +126,14 @@ const Popular=(props)=>{
           
           
         />
+    
             <FlatGrid
              
              itemDimension={100}
              spacing={10}
              data={main}
              style={styles.grid}
-             renderItem={ren}  
+             renderItem={renderItem}  
              initialNumToRender={10}
              maxToRenderPerBatch={10}
              onEndReached={getrest}
@@ -196,17 +151,15 @@ const Popular=(props)=>{
 
 const mapToProps=(state)=>{
     return {
-        movies:state.movies,
+        movies:state.genres,
         page:state.page
     }
 }
 const dispatchToProps=(dispatch)=>{
     return{
-        setMovies:(item)=>{dispatch({type:'SET MOVIES',item:item})},
-        updateMovies:(update)=>{dispatch({type:'UPDATE MOVIES',update:update})},
-        nextPage:()=>{dispatch({type:'NEXT PAGE'})},
-        login:(item)=>{dispatch({type:'LOG in',user:item})},
-        clear:()=>{dispatch({type:'CLEAR MOVIES',})},
+       setGenre:(item)=>{dispatch({type:'SET GENRES',item:item})},
+       update:(item)=>{dispatch({type:'UPDATE GENRES',item:item})}
+
     }
 }
 const styles=StyleSheet.create({
@@ -220,4 +173,4 @@ const styles=StyleSheet.create({
     },
 })
 
-export default connect(mapToProps,dispatchToProps)(Popular)
+export default connect(mapToProps,dispatchToProps)(SeriesMain)
