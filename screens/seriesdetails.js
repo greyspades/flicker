@@ -28,6 +28,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { LinearGradient } from "expo-linear-gradient";
 import {Formik} from 'formik'
 import YoutubePlayer from "react-native-youtube-iframe";
+import Dialog, { DialogContent } from 'react-native-popup-dialog';
 
 
 const SeriesDetails=(props)=>{
@@ -54,6 +55,8 @@ const SeriesDetails=(props)=>{
   const [trailer,setTrailer]=useState(false)
 
   const [trailerId,setTrailerId]=useState()
+
+  const [dialog,setdialog]=useState(false)
 
   
   
@@ -191,7 +194,7 @@ const SeriesDetails=(props)=>{
             .then((res)=>{
               
             })
-          }} style={{marginLeft:wp('80%'),marginBottom:wp('2%')}}>
+          }} style={{marginLeft:wp('10%'),marginBottom:wp('2%')}}>
           <AntDesign name="heart" size={35} color="maroon" />
           </TouchableOpacity>
          
@@ -199,7 +202,7 @@ const SeriesDetails=(props)=>{
       }
       else {
         return (
-          <TouchableOpacity onPress={addToFav} style={{marginLeft:wp('80%'),marginBottom:wp('2%')}}>
+          <TouchableOpacity onPress={addToFav} style={{marginLeft:wp('10%'),marginBottom:wp('2%')}}>
           <AntDesign name="hearto" size={35} color="white" />
           </TouchableOpacity>
          
@@ -222,6 +225,37 @@ const SeriesDetails=(props)=>{
       })
       
     }
+    
+    const addToWatchlist=()=>{
+      let title=props.navigation.getParam('name')
+      let item={
+        username:props.info.username,
+        title:title,
+        type:'series'
+      }
+      //console.log(item)
+      
+      Axios.post(`https://flickmeet-1.herokuapp.com/add_to_watchlist`,{item})
+      .then((res)=>{
+        console.log(res.data)
+        if(res.data=='ADDED TO WATCHLIST'){
+          setdialog(true)
+        }
+      })
+    }
+
+    const ShowAddButton=()=>{
+      return (
+        <View style={{marginLeft:wp('65%')}}>
+          <TouchableOpacity onPress={
+           addToWatchlist
+          }>
+            <Image source={require('../assets/playlist.png')} style={{height:40,width:40}} />
+          </TouchableOpacity>
+        </View>
+      )
+    }
+
     const playTrailer=()=>{
       if(!trailer){
         return(
@@ -268,14 +302,25 @@ const SeriesDetails=(props)=>{
         
           <ScrollView ref={scrollRef}
           >
-            
+              <Dialog
+    visible={dialog}
+          height={70}
+          dialogStyle={{backgroundColor:'maroon'}}
+    onTouchOutside={() => {
+      setdialog(false);
+    }}
+  >
+     <DialogContent style={{padding:20}}>
+      <Text style={{color:'white',fontSize:20}}>Added to Watchlist</Text>
+    </DialogContent>
+  </Dialog>
           <Image source={{uri:link}} style={styles.image} resizeMode='stretch'/>
           <View style={{flex:1,flexDirection:'row'}}>
           <Text style={styles.title}>{props.navigation.getParam('name')}</Text>
         
           </View>
           <View style={{flex:1,flexDirection:'row'}}>
-            
+            {ShowAddButton()}
           {showHeart()}
           
           </View>

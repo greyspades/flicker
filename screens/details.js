@@ -31,7 +31,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 import YoutubePlayer from "react-native-youtube-iframe";
 import { useFocusEffect } from '@react-navigation/native'
-
+import Dialog, { DialogContent } from 'react-native-popup-dialog';
 
 
 
@@ -64,6 +64,7 @@ const Details=(props)=>{
 
     const [trailerId, setTrailerId]=useState()
 
+    const [dialog,setdialog]=useState(false)
     
     
     const genretype=[]
@@ -118,10 +119,10 @@ const Details=(props)=>{
           Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${title+' trailer'}&type=video&key=AIzaSyBdiVQhDYy29IuM3pWaZRzboNKEvKojr0w`)
           .then((res)=>{
             let id=res.data.items[0].id.videoId
-            console.log(res.data.items[0])
+            //console.log(res.data.items[0])
               setTrailerId(id)
           })
-          console.log(id)
+          
           getSimilar()
         },[])
 
@@ -229,8 +230,6 @@ const Details=(props)=>{
            )
          }
         }
-       
-      
       const scrollTop=()=>{
         scrollRef.ScrollTo({y:0,animated:true})
       }
@@ -244,7 +243,7 @@ const Details=(props)=>{
               .then((res)=>{
                 
               })
-            }} style={{marginLeft:wp('80%'),marginBottom:wp('2%')}}>
+            }} style={{marginLeft:wp('10%'),marginBottom:wp('2%')}}>
             <AntDesign name="heart" size={35} color="maroon" />
             </TouchableOpacity>
            
@@ -252,7 +251,7 @@ const Details=(props)=>{
         }
         else {
           return (
-            <TouchableOpacity onPress={addToFav} style={{marginLeft:wp('80%'),marginBottom:wp('2%')}}>
+            <TouchableOpacity onPress={addToFav} style={{marginLeft:'auto',marginRight:wp('2%'),marginBottom:wp('2%')}}>
             <AntDesign name="hearto" size={35} color="white" />
             </TouchableOpacity>
            
@@ -301,11 +300,38 @@ const Details=(props)=>{
         })
         
       }
-
-      const showGenre=()=>{
-       
-
+      
+      const addToWatchlist=()=>{
+        let title=props.navigation.getParam('title')
+        let item={
+          username:props.info.username,
+          title:title,
+          type:'movie'
+        }
+        //console.log(item)
+        
+        Axios.post(`https://flickmeet-1.herokuapp.com/add_to_watchlist`,{item})
+        .then((res)=>{
+          console.log(res.data)
+          if(res.data=='ADDED TO WATCHLIST'){
+            setdialog(true)
+          }
+        })
       }
+
+      const ShowAddButton=()=>{
+        return (
+          <View style={{marginLeft:wp('65%')}}>
+            <TouchableOpacity onPress={
+             addToWatchlist
+            }>
+              <Image source={require('../assets/playlist.png')} style={{height:40,width:40}} />
+            </TouchableOpacity>
+          </View>
+        )
+      }
+    
+      
       
       
     return (
@@ -331,13 +357,25 @@ const Details=(props)=>{
           
           
         />
-             
+      <Dialog
+    visible={dialog}
+          height={70}
+          dialogStyle={{backgroundColor:'maroon'}}
+    onTouchOutside={() => {
+      setdialog(false);
+    }}
+  >
+     <DialogContent style={{padding:20}}>
+      <Text style={{color:'white',fontSize:20}}>Added to Watchlist</Text>
+    </DialogContent>
+  </Dialog>
             <Image source={{uri:link}} style={styles.image} resizeMode='stretch'/>
             <View style={{flex:1,flexDirection:'row'}}>
             <Text style={styles.title}>{props.navigation.getParam('title')}</Text>
             
             </View>
             <View style={{flex:1,flexDirection:'row'}}>
+              {ShowAddButton()}
               
             {showHeart()}
             

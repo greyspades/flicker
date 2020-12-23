@@ -289,7 +289,7 @@ const SeriesGenres=(props)=>{
 
     return(
         <View style={{flex:1,backgroundColor:'black', }}>
-              <Button style={{marginBottom:20}} title='purge' onPress={()=>{console.log(genre)}} />
+             
             <ActivityIndicator style={{backgroundColor:'black'}} size='large' animating={isLoading}/>
             <Spinner
           visible={false}

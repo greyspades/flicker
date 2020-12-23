@@ -1,5 +1,5 @@
 import React, { useState,useEffect, useCallback,useMemo,  } from 'react'
-import { Text, View,StyleSheet,Button,TouchableOpacity,ActivityIndicator,InteractionManager, AsyncStorage} from 'react-native'
+import { Text, View,StyleSheet,Button,TouchableOpacity,ActivityIndicator,InteractionManager, AsyncStorage, RefreshControlBase} from 'react-native'
 import Axios from 'axios'
 import Card from '../shared/card'
 import {SectionGrid,FlatGrid} from 'react-native-super-grid'
@@ -12,13 +12,14 @@ import {widthPercentageToDP as wp,heightPercentageTODP as hp} from 'react-native
 import Spinner from 'react-native-loading-spinner-overlay';
 import {persistStore,persistReducer} from 'redux-persist'
 import movieReducer from '../redux/reducers/moviereducer'
+import SkeletonContent from 'react-native-skeleton-content';
 //import MyTab from '../routes/tab'
 
 
 
 const UpcomingMovies=(props)=>{
     const [popular,setpopular]=useState([])
-    const [main,setmain]=useState(movies)       
+    const [main,setmain]=useState([])       
  
     //const [page,setpage]=useState(1)
     const [loaded,setloaded]=useState(false)
@@ -33,10 +34,9 @@ const UpcomingMovies=(props)=>{
             Axios.get(`https://api.themoviedb.org/3/movie/top_rated?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${page}`)
             .then((res)=>{
             if(!isCancelled){
-                props.setMovies(res.data.results)
+                //props.setMovies(res.data.results)
                 setloaded(true)
-                props.login(item)
-            
+                setmain([...prev,...res.data.results])
             }
             })
           
@@ -74,7 +74,9 @@ const UpcomingMovies=(props)=>{
      setpage(page+1)
      Axios.get(`https://api.themoviedb.org/3/movie/top_rated?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${page}`)
      .then((res)=>{
-        props.updateMovies(res.data.results)
+        //props.updateMovies(res.data.results)
+        setprev([...main,res.data.results.shift()])
+        console.log(res.data.results)
      })
     }
 
@@ -113,7 +115,7 @@ const UpcomingMovies=(props)=>{
     
     return(
         <View style={{flex:1,backgroundColor:'black', }}>
-              <Button style={{marginBottom:20}} title='purge' onPress={()=>{props.clear}} />
+             <Text style={{color:'white',fontSize:17,marginLeft:wp('2%')}}>Top rated</Text>
             <ActivityIndicator style={{backgroundColor:'black'}} size='large' animating={isLoading}/>
             <Spinner
           visible={false}
@@ -128,14 +130,37 @@ const UpcomingMovies=(props)=>{
              
              itemDimension={100}
              spacing={10}
-             data={movieList}
+             data={main}
              style={styles.grid}
              renderItem={ren}  
              initialNumToRender={10}
              maxToRenderPerBatch={10}
              onEndReached={getrest}
              onEndReachedThreshold={0.5}
-             ListEmptyComponent={showLoading}
+             ListEmptyComponent={()=>(
+                <SkeletonContent
+                containerStyle={{}}
+                isLoading={true}
+                layout={[
+                  { key: 'someId1', width: 100, height: 150, marginBottom: 6 ,marginLeft:wp('3%'),marginTop:wp('3%')},
+                  { key: 'someOtherId2', width: 100, height: 150, marginLeft:wp('36%'),marginTop:wp('-43%')},
+                  { key: 'someOtherId3', width: 100, height: 150,marginTop:wp('-41.5%'),marginLeft:'auto',marginRight:wp('3%')},
+                  { key: 'someId4', width: 100, height: 150, marginBottom: 6 ,marginLeft:wp('3%'),marginTop:wp('3%')},
+                  { key: 'someOtherId5', width: 100, height: 150, marginLeft:wp('36%'),marginTop:wp('-43%')},
+                  { key: 'someOtherId6', width: 100, height: 150,marginTop:wp('-41.5%'),marginLeft:'auto',marginRight:wp('3%')},
+                  { key: 'someId7', width: 100, height: 150, marginBottom: 6 ,marginLeft:wp('3%'),marginTop:wp('3%')},
+                  { key: 'someOtherId8', width: 100, height: 150, marginLeft:wp('36%'),marginTop:wp('-43%')},
+                  { key: 'someOtherId9', width: 100, height: 150,marginTop:wp('-41.5%'),marginLeft:'auto',marginRight:wp('3%')},
+                  { key: 'someId10', width: 100, height: 150, marginBottom: 6 ,marginLeft:wp('3%'),marginTop:wp('3%')},
+                  { key: 'someOtherId11', width: 100, height: 150, marginLeft:wp('36%'),marginTop:wp('-43%')},
+                  { key: 'someOtherId12', width: 100, height: 150,marginTop:wp('-41.5%'),marginLeft:'auto',marginRight:wp('3%')},
+                ]}
+                boneColor="black"
+                highlightColor="maroon"
+                animationType="shiver"
+                animationDirection="horizontalLeft"
+                      />
+             )}
    
             />
              

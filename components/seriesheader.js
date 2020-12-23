@@ -97,20 +97,20 @@ const SeriesHeader=(props)=>{
     }
     return(
         <View style={styles.header}>
-            <MaterialIcons name='menu' size={45} onPress={openmenu} style={styles.icon} />
+            <MaterialIcons name='menu' size={35} onPress={openmenu} style={styles.icon} />
             {showDot()}
             
             <View style={styles.heading}>
             <Text style={styles.headertext}>Tv shows</Text>
             </View>
             
-            <TouchableOpacity onPress={()=>{setShowAdd(true)}} style={{width:40,height:40,marginTop:wp('2%'),marginLeft:wp('7%')}}>
-            <AntDesign name=    "adduser" size={40} color="white" />
+            <TouchableOpacity onPress={()=>{setShowAdd(true)}} style={{width:40,height:40,marginTop:wp('2.5%'),marginLeft:wp('7%')}}>
+            <AntDesign name=    "adduser" size={35} color="white" />
             </TouchableOpacity>
             {addUser()}
 
-            <MaterialIcons name='search' size={40} 
-            onPress={opensearchbar} style={{color:'white',marginLeft:wp('8%'),marginTop:wp('2%')}}/>
+            <MaterialIcons name='search' size={35} 
+            onPress={opensearchbar} style={{color:'white',marginLeft:wp('8%'),marginTop:wp('2.5%')}}/>
             <View>
             <SeriesSearchbar toggleSearch={search} method={opensearchbar} clear={clear} navigation={props.navigation} />
             </View>
@@ -167,7 +167,7 @@ const styles=StyleSheet.create({
         left:1,
         color:'white',
         marginLeft:wp('-4%'),
-        marginTop:wp('1%')
+        marginTop:wp('2.5%')
         //marginBottom:wp('10%')
     },
     heading:{

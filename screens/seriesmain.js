@@ -13,6 +13,8 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {persistStore,persistReducer} from 'redux-persist'
 import movieReducer from '../redux/reducers/moviereducer'
 import SeriesCard from '../shared/seriescards'
+import DropDownPicker from 'react-native-dropdown-picker';
+import SkeletonContent from 'react-native-skeleton-content';
 //import MyTab from '../routes/tab'
 
 
@@ -27,11 +29,12 @@ const SeriesMain=(props)=>{
     const [isLoading,setIsLoading]=useState(false)
     const [spinner,setSpinner]=useState(false)
     const [page,setpage]=useState(1)
+    const [year,setyear]=useState(new Date().getFullYear())
     
     useEffect(()=>{
             let isCancelled=false;
             let item=props.navigation.getParam('item')
-            Axios.get(`https://api.themoviedb.org/3/discover/tv?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${page}&with_genres=${genre.id}`)
+            Axios.get(`https://api.themoviedb.org/3/discover/tv?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&sort_by=popularity.desc&first_air_date_year=${year}&page=${page}&timezone=America%2FNew_York&with_genres=${genre.id}&include_null_first_air_dates=false`)
             .then((res)=>{
             if(!isCancelled){
                 //props.setGenre(res.data.results)
@@ -74,7 +77,7 @@ const SeriesMain=(props)=>{
     }
     const getrest=()=>{
      setpage(page+1)
-     Axios.get(`https://api.themoviedb.org/3/discover/tv?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${page}&with_genres=${genre.id}`)
+     Axios.get(`https://api.themoviedb.org/3/discover/tv?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&sort_by=popularity.desc&first_air_date_year=${year}&page=${page}&timezone=America%2FNew_York&with_genres=${genre.id}&include_null_first_air_dates=false`)
      .then((res)=>{
         //props.update(res.data.results)
         setprev([...main,res.data.results.shift()])
@@ -113,10 +116,59 @@ const SeriesMain=(props)=>{
     //const navigate=useCallback(({item})=>{navigation.navigate('Details',item)},[item])
     const ren=({ item })=>{return(<Renderitem item={item} navigation={props.navigation} />)}
      const {movies}=props
+     var today=new Date()
+     var the_year=today.getFullYear().toString()
+     var this_year=today.getFullYear()
+    
+     var year_list=[]
+     var year_val=[]
+     while(year_list.length<30){
+         let year_2=this_year--
+         year_val.push(year_2)
+         year_list.push({label:year_2.toString(),value:year_2.toString()})
+ 
+     }
     
     return(
-        <View style={{flex:1,backgroundColor:'black', }}>
-             <View><Text style={{color:'white',fontSize:25,textAlign:'center'}}>{genre.name}</Text></View>
+        <View style={{backgroundColor:'black', }}>
+             <View style={{flexDirection:'row',}}><Text style={{color:'white',fontSize:17,marginVertical:wp('2%'),marginLeft:wp('2'),}}>{genre.name}</Text>
+             <Text style={{color:'white',marginLeft:wp('7%'),marginTop:wp('2.2%'),fontSize:16}}>{year}</Text>
+                <View style={{marginLeft:'auto',marginRight:wp('4%')}}>
+                <DropDownPicker items={year_list} 
+                           
+                           onChangeItem={(item)=>{
+                              
+                              setyear(item.value)
+                               setmain([])
+                               setprev([])
+                           }}
+                           
+                           placeholder='year'
+                           
+                           containerStyle={{height:25,width:90,marginVertical:wp('2')}}
+                           dropDownStyle={{backgroundColor: 'black'}}
+                           
+                           itemStyle={{
+                               justifyContent: 'center', 
+                           }}
+                           labelStyle={{
+                               fontSize: 14,
+                               textAlign: 'left',
+                               color: 'white'
+                           }}
+                           selectedtLabelStyle={{
+                               color: 'maroon'
+                           }}
+                           placeholderStyle={{
+                               fontWeight: 'bold',
+                               //textAlign: 'center',
+                               color:'blue',
+                               fontSize:17
+                           }}
+                           activeLabelStyle={{color: 'maroon'}}
+                       />
+                </View>
+             </View>
             <ActivityIndicator style={{backgroundColor:'black'}} size='large' animating={isLoading}/>
             <Spinner
           visible={false}
@@ -138,7 +190,30 @@ const SeriesMain=(props)=>{
              maxToRenderPerBatch={10}
              onEndReached={getrest}
              onEndReachedThreshold={0.5}
-             ListEmptyComponent={showLoading}
+             ListEmptyComponent={()=>(
+                <SkeletonContent
+                containerStyle={{}}
+                isLoading={true}
+                layout={[
+                  { key: 'someId1', width: 100, height: 150, marginBottom: 6 ,marginLeft:wp('3%'),marginTop:wp('3%')},
+                  { key: 'someOtherId2', width: 100, height: 150, marginLeft:wp('36%'),marginTop:wp('-43%')},
+                  { key: 'someOtherId3', width: 100, height: 150,marginTop:wp('-41.5%'),marginLeft:'auto',marginRight:wp('3%')},
+                  { key: 'someId4', width: 100, height: 150, marginBottom: 6 ,marginLeft:wp('3%'),marginTop:wp('3%')},
+                  { key: 'someOtherId5', width: 100, height: 150, marginLeft:wp('36%'),marginTop:wp('-43%')},
+                  { key: 'someOtherId6', width: 100, height: 150,marginTop:wp('-41.5%'),marginLeft:'auto',marginRight:wp('3%')},
+                  { key: 'someId7', width: 100, height: 150, marginBottom: 6 ,marginLeft:wp('3%'),marginTop:wp('3%')},
+                  { key: 'someOtherId8', width: 100, height: 150, marginLeft:wp('36%'),marginTop:wp('-43%')},
+                  { key: 'someOtherId9', width: 100, height: 150,marginTop:wp('-41.5%'),marginLeft:'auto',marginRight:wp('3%')},
+                  { key: 'someId10', width: 100, height: 150, marginBottom: 6 ,marginLeft:wp('3%'),marginTop:wp('3%')},
+                  { key: 'someOtherId11', width: 100, height: 150, marginLeft:wp('36%'),marginTop:wp('-43%')},
+                  { key: 'someOtherId12', width: 100, height: 150,marginTop:wp('-41.5%'),marginLeft:'auto',marginRight:wp('3%')},
+                ]}
+                boneColor="black"
+                highlightColor="maroon"
+                animationType="shiver"
+                animationDirection="horizontalLeft"
+                      />
+             )}
    
             />
              

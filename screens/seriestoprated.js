@@ -1,5 +1,5 @@
 import React, { useState,useEffect, useCallback,useMemo,  } from 'react'
-import { Text, View,StyleSheet,Button,TouchableOpacity,ActivityIndicator,InteractionManager, AsyncStorage} from 'react-native'
+import { Text, View,StyleSheet,Button,TouchableOpacity,ActivityIndicator,InteractionManager, AsyncStorage, RefreshControlBase} from 'react-native'
 import Axios from 'axios'
 import Card from '../shared/card'
 import {SectionGrid,FlatGrid} from 'react-native-super-grid'
@@ -12,14 +12,13 @@ import {widthPercentageToDP as wp,heightPercentageTODP as hp} from 'react-native
 import Spinner from 'react-native-loading-spinner-overlay';
 import {persistStore,persistReducer} from 'redux-persist'
 import movieReducer from '../redux/reducers/moviereducer'
-import DateTimePicker from '@react-native-community/datetimepicker';
-import DropDownPicker from 'react-native-dropdown-picker';
+import SeriesCard from '../shared/seriescards'
 import SkeletonContent from 'react-native-skeleton-content';
 //import MyTab from '../routes/tab'
 
 
 
-const Genremain=(props)=>{
+const SeriesTop=(props)=>{
     const [popular,setpopular]=useState([])
     const [main,setmain]=useState([])       
  
@@ -29,20 +28,16 @@ const Genremain=(props)=>{
     const [isLoading,setIsLoading]=useState(false)
     const [spinner,setSpinner]=useState(false)
     const [page,setpage]=useState(1)
-    const [year,setyear]=useState()
-    const [picker,setPicker]=useState()
-
+    
     useEffect(()=>{
             let isCancelled=false;
             let item=props.navigation.getParam('item')
-            Axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${page}&primary_release_year=${year}&with_genres=${genre.id}`)
+            Axios.get(`https://api.themoviedb.org/3/tv/top_rated?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${page}`)
             .then((res)=>{
             if(!isCancelled){
-                //props.setGenre(res.data.results)
+                //props.setMovies(res.data.results)
                 setloaded(true)
                 setmain([...prev,...res.data.results])
-                
-            
             }
             })
           
@@ -69,19 +64,20 @@ const Genremain=(props)=>{
     
     var pop=popular
     var next=[]
-    var genre=props.navigation.getParam('item')
+
     const getapi=()=>{
-     Axios.get(``)
+     Axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${page}`)
      .then((res)=>{
         props.setMovies(res.data.results)
      })
     }
     const getrest=()=>{
      setpage(page+1)
-     Axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${page}&primary_release_year=${year}&with_genres=${genre.id}`)
+     Axios.get(`https://api.themoviedb.org/3/tv/top_rated?api_key=99513a8369b9b5f2750aeee3e661a5ff&language=en-US&page=${page}`)
      .then((res)=>{
-        //props.update(res.data.results)
+        //props.updateMovies(res.data.results)
         setprev([...main,res.data.results.shift()])
+        console.log(res.data.results)
      })
     }
 
@@ -99,12 +95,12 @@ const Genremain=(props)=>{
     
     const renderItem=({ item })=>{
         return(
-            <TouchableOpacity onPress={()=>props.navigation.navigate('Details',item)}>
-            <Card poster={item.poster_path} title={item.title} date={item.release_date}>
+            <TouchableOpacity onPress={()=>props.navigation.navigate('SeriesDetails',item)}>
+            <SeriesCard poster={item.poster_path} title={item.name} date={item.first_air_date}>
 
-            </Card>
+            </SeriesCard>
 
-            </TouchableOpacity>  
+        </TouchableOpacity>  
         )
     }
     const showLoading=()=>{
@@ -118,63 +114,9 @@ const Genremain=(props)=>{
     const ren=({ item })=>{return(<Renderitem item={item} navigation={props.navigation} />)}
      const {movies}=props
     
-     var today=new Date()
-     var the_year=today.getFullYear().toString()
-     var this_year=today.getFullYear()
-    
-     var year_list=[]
-     var year_val=[]
-     while(year_list.length<30){
-         let year_2=this_year--
-         year_val.push(year_2)
-         year_list.push({label:year_2.toString(),value:year_2.toString()})
- 
-     }
-
     return(
         <View style={{flex:1,backgroundColor:'black', }}>
-             <View style={{flexDirection:'row'}}><Text style={{color:'white',fontSize:17,textAlign:'center',marginLeft:wp('2%'),marginTop:wp('2.2%')}}>{genre.name}</Text>
-             <Text style={{color:'white',marginLeft:wp('7%'),marginTop:wp('2.5%'),fontSize:16}}>{year}</Text>
-                <View style={{marginLeft:'auto',marginRight:wp('4%')}}>
-                <DropDownPicker items={year_list} 
-                            
-                           
-                            onChangeItem={(item)=>{
-                                setmain([])
-                                setprev([])
-                               setyear(item.value)
-                               console.log(item.value)
-                                setPicker(false)
-                            }}
-                           
-                            placeholder='year'
-                            
-                            containerStyle={{height:27,width:90,marginVertical:wp('2'),}}
-                            dropDownStyle={{backgroundColor: 'black',}}
-                            itemStyle={{
-                                justifyContent:'center'
-                            }}
-                            labelStyle={{
-                                fontSize: 14,
-                                textAlign: 'center',
-                                color: 'white',
-                                alignItems:'center'
-                                
-                            }}
-                            selectedtLabelStyle={{
-                                color: 'maroon'
-                            }}
-                            placeholderStyle={{
-                                fontWeight: 'bold',
-                                fontSize:40,
-                                
-                                color:'white'
-                            }}
-                           
-                            activeLabelStyle={{color: 'maroon'}}
-                        />
-                </View>
-                </View>
+             <Text style={{color:'white',fontSize:17,marginVertical:wp('2%'),marginLeft:wp('2'),}}>Top rated</Text>
             <ActivityIndicator style={{backgroundColor:'black'}} size='large' animating={isLoading}/>
             <Spinner
           visible={false}
@@ -232,14 +174,17 @@ const Genremain=(props)=>{
 
 const mapToProps=(state)=>{
     return {
-        movies:state.genres,
+        movies:state.upcomingMovies,
         page:state.page
     }
 }
 const dispatchToProps=(dispatch)=>{
     return{
-       setGenre:(item)=>{dispatch({type:'SET GENRES',item:item})},
-       update:(item)=>{dispatch({type:'UPDATE GENRES',item:item})}
+        setMovies:(item)=>{dispatch({type:'SET UCM',item:item})},
+        updateMovies:(update)=>{dispatch({type:'UPDATE UCM',item:update})},
+        nextPage:()=>{dispatch({type:'NEXT PAGE'})},
+        login:(item)=>{dispatch({type:'LOG in',user:item})},
+        clear:()=>{dispatch({type:'CLEAR MOVIES',})}
 
     }
 }
@@ -254,4 +199,4 @@ const styles=StyleSheet.create({
     },
 })
 
-export default connect(mapToProps,dispatchToProps)(Genremain)
+export default connect(mapToProps,dispatchToProps)(SeriesTop)

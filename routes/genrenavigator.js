@@ -38,16 +38,7 @@ const screens={
             
         }
     },
-    Details:{
-        screen:Details,
-        navigationOptions:{
-            title:'Details',
-            header:null,
-            headerStyle:{
-                backgroundColor:'maroon',
-            }
-        }
-    },
+    
     
 }
 

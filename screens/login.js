@@ -40,7 +40,7 @@ const getData=async(dispatch)=>{
    if(userAge != null){
     Axios.post(`https://flickmeet-1.herokuapp.com/log_in`,{user})
     .then( (res)=>{
-        console.log(res.data.info)
+        //console.log(res.data.info)
         //console.log(user)
         props.setUser(res.data.info)
         props.navigation.replace('Home')
@@ -129,7 +129,7 @@ const getData=async(dispatch)=>{
           
           
         />
-        <Button title='check' onPress={()=>{console.log(props.userInfo)}}/>
+       
             <LinearGradient  colors={["maroon", "maroon", "purple"]}
         style={{width:300,height:600,backgroundColor:'maroon',flex:1,alignItems:'center',
         borderRadius:10,marginTop:wp('15%'),}}>
